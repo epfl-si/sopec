@@ -1,6 +1,6 @@
 - name: common
   hosts: all
   roles:
-      - role: roles/common
+    - role: roles/common
   tags:
-      - common
+    - common
