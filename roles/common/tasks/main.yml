@@ -1,8 +1,8 @@
 - name: Deploy Secrets
   include_tasks:
-      file: secrets.yml
-      apply:
-          tags:
-              - common.secrets
+    file: secrets.yml
+    apply:
+      tags:
+        - common.secrets
   tags:
-      - common.secrets
+    - common.secrets
