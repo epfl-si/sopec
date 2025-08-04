@@ -1,1 +1,1 @@
-secrets: "{{ lookup('file', '/keybase/team/epfl_idevfsd/fsd-ops/cluster/secrets.yml') | from_yaml }}"
+secrets: "{{ lookup('file', '/keybase/team/epfl_sopec/common/secrets.yml') | from_yaml }}"
