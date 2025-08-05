@@ -1,0 +1,6 @@
+image: quay-its.epfl.ch/svc0176/eeee
+version: 1.0.0
+app: eeee
+subdomain: eeee
+secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/eeee/secrets.yml') | from_yaml }}"
+domain: epfl.ch
