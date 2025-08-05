@@ -4,3 +4,10 @@
     - role: roles/common
   tags:
     - common
+
+- name: eeee
+  hosts: all
+  roles:
+    - role: roles/eeee
+  tags:
+    - eeee
