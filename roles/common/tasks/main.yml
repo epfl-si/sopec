@@ -6,3 +6,12 @@
         - common.secrets
   tags:
     - common.secrets
+
+- name: Deploy PostgreSQL cluster
+  include_tasks:
+    file: postgres.yml
+    apply:
+      tags:
+        - common.postgres
+  tags:
+    - common.postgres
