@@ -1,0 +1,21 @@
+- name: Deploy PostgreSQL cluster
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      metadata:
+        name: postgres-cluster
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        instances: 2
+        storage:
+          size: "10Gi"
+          storageClass: "sopec"
+        enableSuperuserAccess: true
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+        managed:
+          roles: "{{ postgres_roles }}"
