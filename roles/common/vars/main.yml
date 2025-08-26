@@ -5,3 +5,4 @@ postgres_users:
   - hedgedoc
   - rallly
   - grist
+  - umami
