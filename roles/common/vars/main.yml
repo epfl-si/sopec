@@ -5,5 +5,3 @@ postgres_users:
   - hedgedoc
   - rallly
   - grist
-
-postgres_roles: "{{ postgres_users | map('regex_replace', '^(.*)$', {'name': '\\1-user', 'ensure': 'present', 'login': true, 'superuser': false, 'passwordSecret': {'name': '\\1-db-credentials'}}) | list }}"
