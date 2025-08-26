@@ -15,3 +15,12 @@
         - common.postgres
   tags:
     - common.postgres
+
+- name: Deploy NFS Subdir External Provisioner
+  include_tasks:
+    file: nfs.yml
+    apply:
+      tags:
+        - common.nfs
+  tags:
+    - common.nfs
