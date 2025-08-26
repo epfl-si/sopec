@@ -1,0 +1,9 @@
+image: quay-its.epfl.ch/svc0176/umami
+version: 2.19.0
+app: umami
+subdomain: umami
+secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/umami/secrets.yml') | from_yaml }}"
+domain: labs.fsd.team
+
+postgres_cluster:
+  name: postgres-cluster
