@@ -11,3 +11,10 @@
     - role: roles/eeee
   tags:
     - eeee
+
+- name: umami
+  hosts: all
+  roles:
+    - role: roles/umami
+  tags:
+    - umami
