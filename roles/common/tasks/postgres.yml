@@ -11,6 +11,21 @@
         name: "{{ item }}-db-credentials"
   loop: "{{ postgres_users }}"
 
+- name: Create S3 credentials secret
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: s3-credentials
+        namespace: "{{ openshift_namespace }}"
+      stringData:
+        AWS_BUCKET_NAME: "{{ secrets[openshift_env].s3.name }}"
+        AWS_BUCKET_HOST: "{{ secrets[openshift_env].s3.host }}"
+        AWS_ACCESS_KEY_ID: "{{ secrets[openshift_env].s3.access_key_id }}"
+        AWS_SECRET_ACCESS_KEY: "{{ secrets[openshift_env].s3.access_key_secret }}"
+      type: Opaque
+
 - name: Deploy PostgreSQL cluster
   kubernetes.core.k8s:
     state: present
@@ -21,15 +36,26 @@
         name: postgres-cluster
         namespace: "{{ openshift_namespace }}"
       spec:
-        instances: 2
+        instances: 1
+        backup:
+          barmanObjectStore:
+            destinationPath: "s3://{{ secrets[openshift_env].s3.name }}/{{ openshift_env }}"
+            endpointURL: "https://{{ secrets[openshift_env].s3.host }}"
+            s3Credentials:
+              accessKeyId:
+                name: s3-credentials
+                key: AWS_ACCESS_KEY_ID
+              secretAccessKey:
+                name: s3-credentials
+                key: AWS_SECRET_ACCESS_KEY
         storage:
           size: "10Gi"
           storageClass: "sopec"
         enableSuperuserAccess: true
         resources:
           requests:
-            cpu: "500m"
-            memory: "500Mi"
+            cpu: "100m"
+            memory: "200Mi"
           limits:
             memory: "1Gi"
         managed:
