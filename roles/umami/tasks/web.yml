@@ -13,7 +13,7 @@
           - name: "{{ app }}-svc-port"
             protocol: TCP
             port: 80
-            targetPort: 3000
+            targetPort: http
 
 - name: Create Route
   kubernetes.core.k8s:
@@ -82,6 +82,7 @@
                 name: "{{ app }}"
                 ports:
                   - containerPort: 3000
+                    name: http
                 envFrom:
                   - secretRef:
                       name: "{{ app }}-secrets"
@@ -90,7 +91,7 @@
                     cpu: 50m
                     memory: 128Mi
                   limits:
-                    memory: 256Mi
+                    memory: 512Mi
                 readinessProbe:
                   tcpSocket:
                     port: 3000
