@@ -1,0 +1,17 @@
+- name: Ensure PostgreSQL Database
+  include_tasks:
+    file: postgres.yml
+    apply:
+      tags:
+        - rybbit.postgres
+  tags:
+    - rybbit.postgres
+
+- name: Deploy Web Application
+  include_tasks:
+    file: web.yml
+    apply:
+      tags:
+        - rybbit.web
+  tags:
+    - rybbit.web
