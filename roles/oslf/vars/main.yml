@@ -1,0 +1,6 @@
+image: ghcr.io/epfl-fsd/oslf
+version: 1.2.1
+app: oslf
+subdomain: oslf
+secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/oslf/secrets.yml') | from_yaml }}"
+domain: fsd.epfl.ch
