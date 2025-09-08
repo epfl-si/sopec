@@ -1,0 +1,99 @@
+- name: Create service
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        selector:
+          app: "{{ app }}"
+        ports:
+          - name: "{{ app }}-svc-port"
+            protocol: TCP
+            port: 80
+            targetPort: 3000
+
+- name: Create Route
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: public-cf
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        to:
+          kind: Service
+          name: "{{ app }}"
+        port:
+          targetPort: "{{ app }}-svc-port"
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create Secret
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ app }}-secrets"
+        namespace: "{{ openshift_namespace }}"
+      stringData:
+        API_USERNAME: "{{ secrets.api_username }}"
+        API_PASSWORD: "{{ secrets.api_password }}"
+        API_URL: "{{ secrets.api_url }}"
+
+- name: Create Deployment
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 1
+        selector:
+          matchLabels:
+            app: "{{ app }}"
+        template:
+          metadata:
+            labels:
+              app: "{{ app }}"
+          spec:
+            containers:
+              - image: "{{ image }}:{{ version }}"
+                imagePullPolicy: Always
+                name: "{{ app }}"
+                ports:
+                  - containerPort: 3000
+                envFrom:
+                  - secretRef:
+                      name: "{{ app }}-secrets"
+                resources:
+                  requests:
+                    cpu: "10m"
+                    memory: "100Mi"
+                  limits:
+                    memory: "100Mi"
+                readinessProbe:
+                  tcpSocket:
+                    port: 3000
+                  initialDelaySeconds: 5
+                  timeoutSeconds: 3
+                livenessProbe:
+                  tcpSocket:
+                    port: 3000
+                  initialDelaySeconds: 5
+                  timeoutSeconds: 3
