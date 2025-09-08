@@ -18,3 +18,10 @@
     - role: roles/umami
   tags:
     - umami
+
+- name: oslf
+  hosts: all
+  roles:
+    - role: roles/oslf
+  tags:
+    - oslf
