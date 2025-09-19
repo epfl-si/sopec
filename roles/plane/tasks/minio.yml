@@ -1,0 +1,94 @@
+- name: Create minio service
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}-minio"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}-minio"
+      spec:
+        clusterIP: None
+        ports:
+          - name: minio-api-9000
+            port: 9000
+            protocol: TCP
+            targetPort: 9000
+          - name: minio-console-9090
+            port: 9090
+            protocol: TCP
+            targetPort: 9090
+        selector:
+          app: "{{ app }}-minio"
+
+- name: Create pvc for minio
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        namespace: "{{ openshift_namespace }}"
+        name: "{{ app }}-minio"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: "1Gi"
+        storageClassName: sopec
+        volumeMode: Filesystem
+
+- name: Create minio statefulset
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: StatefulSet
+      metadata:
+        name: "{{ app }}-minio"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        selector:
+          matchLabels:
+            app: "{{ app }}-minio"
+        serviceName: "{{ app }}-minio"
+        template:
+          metadata:
+            labels:
+              app: "{{ app }}-minio"
+          spec:
+            containers:
+              - image: quay-its.epfl.ch/svc0176/minio:latest
+                imagePullPolicy: IfNotPresent
+                name: "{{ app }}-minio"
+                stdin: true
+                tty: true
+                args:
+                  - server
+                  - /data
+                  - --console-address
+                  - :9090
+                resources:
+                  requests:
+                    memory: "50Mi"
+                    cpu: "50m"
+                  limits:
+                    memory: "1000Mi"
+                    cpu: "500m"
+                envFrom:
+                  - secretRef:
+                      name: "{{ app }}-doc-store-secrets"
+                      optional: false
+                volumeMounts:
+                  - mountPath: /data
+                    name: data
+                    subPath: ""
+            serviceAccount: "{{ app }}-srv-account"
+            serviceAccountName: "{{ app }}-srv-account"
+            volumes:
+              - name: data
+                persistentVolumeClaim:
+                  claimName: "{{ app }}-minio"

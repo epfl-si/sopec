@@ -1,0 +1,77 @@
+- name: Create service
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}-api"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app.name: "{{ app }}-api"
+      spec:
+        clusterIP: None
+        ports:
+          - name: api-8000
+            port: 8000
+            protocol: TCP
+            targetPort: 8000
+        selector:
+          app.name: "{{ app }}-api"
+
+- name: Create Deployment
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        namespace: "{{ openshift_namespace }}"
+        name: "{{ app }}-api"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app.name: "{{ app }}-api"
+        template:
+          metadata:
+            namespace: "{{ openshift_namespace }}"
+            labels:
+              app.name: "{{ app }}-api"
+          spec:
+            containers:
+              - name: "{{ app }}-api"
+                imagePullPolicy: Always
+                image: "quay-its.epfl.ch/svc0176/plane-backend:stable"
+                stdin: true
+                tty: true
+                resources:
+                  requests:
+                    memory: "50Mi"
+                    cpu: "50m"
+                  limits:
+                    memory: "1000Mi"
+                    cpu: "500m"
+                command:
+                  - ./bin/docker-entrypoint-api.sh
+                envFrom:
+                  - configMapRef:
+                      name: "{{ app }}-vars"
+                      optional: false
+                  - secretRef:
+                      name: "{{ app }}-secrets"
+                      optional: false
+                  - secretRef:
+                      name: "{{ app }}-doc-store-secrets"
+                      optional: false
+                readinessProbe:
+                  failureThreshold: 30
+                  httpGet:
+                    path: /
+                    port: 8000
+                    scheme: HTTP
+                  periodSeconds: 10
+                  successThreshold: 1
+                  timeoutSeconds: 1
+            serviceAccount: "{{ app }}-srv-account"
+            serviceAccountName: "{{ app }}-srv-account"

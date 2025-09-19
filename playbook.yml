@@ -25,3 +25,10 @@
     - role: roles/oslf
   tags:
     - oslf
+
+- name: plane
+  hosts: all
+  roles:
+    - role: roles/plane
+  tags:
+    - plane

@@ -1,0 +1,102 @@
+- name: Create secrets
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      metadata:
+        name: "{{ app }}-rabbitmq-secrets"
+        namespace: "{{ openshift_namespace }}"
+      apiVersion: v1
+      kind: Secret
+      type: Opaque
+      stringData:
+        RABBITMQ_DEFAULT_USER: "{{ app }}"
+        RABBITMQ_DEFAULT_PASS: "{{ secrets[openshift_env].rabbitmq.password }}"
+
+- name: Create service
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}-rabbitmq"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app.name: "{{ app }}-rabbitmq"
+      spec:
+        clusterIP: None
+        ports:
+          - name: rabbitmq-5672
+            port: 5672
+            protocol: TCP
+            targetPort: 5672
+          - name: rabbitmq-mgmt-15672
+            port: 15672
+            protocol: TCP
+            targetPort: 15672
+        selector:
+          app.name: "{{ app }}-rabbitmq"
+
+- name: Create pvc for rabbitmq
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        namespace: "{{ openshift_namespace }}"
+        name: "{{ app }}-rabbitmq"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: "100Mi"
+        storageClassName: sopec
+        volumeMode: Filesystem
+
+- name: Create StatefulSet
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: StatefulSet
+      metadata:
+        name: "{{ app }}-rabbitmq"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        selector:
+          matchLabels:
+            app.name: "{{ app }}-rabbitmq"
+        serviceName: "{{ app }}-rabbitmq"
+        template:
+          metadata:
+            labels:
+              app.name: "{{ app }}-rabbitmq"
+          spec:
+            containers:
+              - image: quay-its.epfl.ch/svc0176/rabbitmq:3.13.6-management-alpine
+                imagePullPolicy: "IfNotPresent"
+                name: "{{ app }}-rabbitmq"
+                stdin: true
+                tty: true
+                resources:
+                  requests:
+                    memory: "50Mi"
+                    cpu: "50m"
+                  limits:
+                    memory: "1000Mi"
+                envFrom:
+                  - secretRef:
+                      name: "{{ app }}-rabbitmq-secrets"
+                      optional: false
+                volumeMounts:
+                  - mountPath: /var/lib/rabbitmq
+                    name: data
+                    subPath: ""
+            serviceAccount: "{{ app }}-srv-account"
+            serviceAccountName: "{{ app }}-srv-account"
+            volumes:
+              - name: data
+                persistentVolumeClaim:
+                  claimName: "{{ app }}-rabbitmq"

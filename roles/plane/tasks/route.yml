@@ -1,0 +1,167 @@
+- name: Create web route
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-web"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        path: "/"
+        to:
+          kind: Service
+          name: "{{ app }}-web"
+        port:
+          targetPort: 3000
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create api route
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-api"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        path: "/api"
+        to:
+          kind: Service
+          name: "{{ app }}-api"
+        port:
+          targetPort: 8000
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create auth route
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-auth"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        path: "/auth"
+        to:
+          kind: Service
+          name: "{{ app }}-api"
+        port:
+          targetPort: 8000
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create live route
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-live"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        path: "/live/"
+        to:
+          kind: Service
+          name: "{{ app }}-live"
+        port:
+          targetPort: 3000
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create spaces route
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-space"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        path: "/spaces"
+        to:
+          kind: Service
+          name: "{{ app }}-space"
+        port:
+          targetPort: 3000
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create admin route
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-admin"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        path: "/god-mode"
+        to:
+          kind: Service
+          name: "{{ app }}-admin"
+        port:
+          targetPort: 3000
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create minio route
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-minio"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        path: "/uploads"
+        to:
+          kind: Service
+          name: "{{ app }}-minio"
+        port:
+          targetPort: 9000
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect

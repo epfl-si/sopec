@@ -1,0 +1,56 @@
+- name: Create web service
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}-web"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app.name: "{{ app }}-web"
+      spec:
+        clusterIP: None
+        ports:
+          - name: web-3000
+            port: 3000
+            protocol: TCP
+            targetPort: 3000
+        selector:
+          app.name: "{{ app }}-web"
+
+- name: Create web deployment
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}-web"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app.name: "{{ app }}-web"
+        template:
+          metadata:
+            namespace: "{{ openshift_namespace }}"
+            labels:
+              app.name: "{{ app }}-web"
+          spec:
+            containers:
+              - name: "{{ app }}-web"
+                imagePullPolicy: Always
+                image: "quay-its.epfl.ch/svc0176/plane-frontend:stable"
+                stdin: true
+                tty: true
+                resources:
+                  requests:
+                    memory: "50Mi"
+                    cpu: "50m"
+                  limits:
+                    memory: "1000Mi"
+                    cpu: "500m"
+            serviceAccount: "{{ app }}-srv-account"
+            serviceAccountName: "{{ app }}-srv-account"

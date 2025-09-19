@@ -1,0 +1,100 @@
+- name: Create minio bucket job
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: batch/v1
+      kind: Job
+      metadata:
+        name: "{{ app }}-minio-bucket-1"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        backoffLimit: 6
+        completionMode: NonIndexed
+        template:
+          metadata:
+            namespace: "{{ openshift_namespace }}"
+          spec:
+            restartPolicy: OnFailure
+            initContainers:
+              - name: init
+                image: quay-its.epfl.ch/svc0176/busybox:latest
+                resources:
+                  requests:
+                    memory: "50Mi"
+                    cpu: "50m"
+                  limits:
+                    memory: "100Mi"
+                command:
+                  [
+                    "sh",
+                    "-c",
+                    "until nslookup {{ app }}-minio.{{ openshift_namespace }}.svc.cluster.local; do echo waiting for {{ app }}-minio; sleep 2; done",
+                  ]
+            containers:
+              - command:
+                  - /bin/sh
+                args:
+                  - "-c"
+                  - >-
+                    /usr/bin/mc config host add plane-app-minio http://{{ app }}-minio.{{ openshift_namespace }}.svc.cluster.local:9000 "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY";
+                    /usr/bin/mc mb plane-app-minio/$AWS_S3_BUCKET_NAME;
+                    /usr/bin/mc anonymous set download plane-app-minio/$AWS_S3_BUCKET_NAME; exit 0;
+                envFrom:
+                  - secretRef:
+                      name: "{{ app }}-doc-store-secrets"
+                      optional: false
+                image: quay-its.epfl.ch/svc0176/minio-mc:latest
+                imagePullPolicy: IfNotPresent
+                name: "{{ app }}-minio-bucket"
+                resources:
+                  requests:
+                    memory: "50Mi"
+                    cpu: "50m"
+                  limits:
+                    memory: "1000Mi"
+                    cpu: "500m"
+            serviceAccount: "{{ app }}-srv-account"
+            serviceAccountName: "{{ app }}-srv-account"
+            terminationGracePeriodSeconds: 120
+
+- name: Create migration job
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: batch/v1
+      kind: Job
+      metadata:
+        namespace: "{{ openshift_namespace }}"
+        name: "{{ app }}-api-migrate-1"
+      spec:
+        backoffLimit: 3
+        template:
+          metadata:
+            labels:
+              app.name: "{{ app }}-api-migrate"
+          spec:
+            containers:
+              - name: "{{ app }}-api-migrate"
+                image: quay-its.epfl.ch/svc0176/plane-backend:stable
+                command:
+                  - ./bin/docker-entrypoint-migrator.sh
+                imagePullPolicy: Always
+                resources:
+                  requests:
+                    memory: "50Mi"
+                    cpu: "50m"
+                  limits:
+                    memory: "1000Mi"
+                envFrom:
+                  - configMapRef:
+                      name: "{{ app }}-vars"
+                      optional: false
+                  - secretRef:
+                      name: "{{ app }}-secrets"
+                      optional: false
+                  - secretRef:
+                      name: "{{ app }}-doc-store-secrets"
+                      optional: false
+            restartPolicy: OnFailure
+            serviceAccount: "{{ app }}-srv-account"
+            serviceAccountName: "{{ app }}-srv-account"
