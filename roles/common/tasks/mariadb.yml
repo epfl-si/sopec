@@ -1,0 +1,36 @@
+- name: Deploy MariaDB Cluster
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: k8s.mariadb.com/v1alpha1
+      kind: MariaDB
+      metadata:
+        name: "mariadb-cluster"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        storage:
+          size: 1Gi
+          storageClassName: "sopec"
+          volumeClaimTemplate:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: "1Gi"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "750Mi"
+          limits:
+            memory: "1Gi"
+        rootPasswordSecretKeyRef:
+          name: mariadb-cluster-root
+          key: root-password
+          generate: true
+        metrics:
+          enabled: true
+          exporter:
+            resources:
+              requests:
+                cpu: "10m"
+                memory: "64Mi"

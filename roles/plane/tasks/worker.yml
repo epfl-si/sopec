@@ -1,0 +1,95 @@
+- name: Create beat worker resources
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}-beat-worker"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app.name: "{{ app }}-beat-worker"
+        template:
+          metadata:
+            namespace: "{{ openshift_namespace }}"
+            labels:
+              app.name: "{{ app }}-beat-worker"
+          spec:
+            containers:
+              - name: "{{ app }}-beat-worker"
+                imagePullPolicy: Always
+                image: "quay-its.epfl.ch/svc0176/plane-backend:stable"
+                stdin: true
+                tty: true
+                resources:
+                  requests:
+                    memory: "50Mi"
+                    cpu: "50m"
+                  limits:
+                    memory: "1000Mi"
+                    cpu: "500m"
+                command:
+                  - ./bin/docker-entrypoint-beat.sh
+                envFrom:
+                  - configMapRef:
+                      name: "{{ app }}-vars"
+                      optional: false
+                  - secretRef:
+                      name: "{{ app }}-secrets"
+                      optional: false
+                  - secretRef:
+                      name: "{{ app }}-doc-store-secrets"
+                      optional: false
+            serviceAccount: "{{ app }}-srv-account"
+            serviceAccountName: "{{ app }}-srv-account"
+
+- name: Create worker resources
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}-worker"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app.name: "{{ app }}-worker"
+        template:
+          metadata:
+            namespace: "{{ openshift_namespace }}"
+            labels:
+              app.name: "{{ app }}-worker"
+          spec:
+            containers:
+              - name: "{{ app }}-worker"
+                imagePullPolicy: Always
+                image: "quay-its.epfl.ch/svc0176/plane-backend:stable"
+                stdin: true
+                tty: true
+                resources:
+                  requests:
+                    memory: "50Mi"
+                    cpu: "50m"
+                  limits:
+                    memory: "1000Mi"
+                    cpu: "500m"
+                command:
+                  - ./bin/docker-entrypoint-worker.sh
+                envFrom:
+                  - configMapRef:
+                      name: "{{ app }}-vars"
+                      optional: false
+                  - secretRef:
+                      name: "{{ app }}-secrets"
+                      optional: false
+                  - secretRef:
+                      name: "{{ app }}-doc-store-secrets"
+                      optional: false
+            serviceAccount: "{{ app }}-srv-account"
+            serviceAccountName: "{{ app }}-srv-account"
