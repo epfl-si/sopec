@@ -1,0 +1,80 @@
+- name: Create redis service
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}-redis"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app.name: "{{ app }}-redis"
+      spec:
+        clusterIP: None
+        ports:
+          - name: redis-6379
+            port: 6379
+            protocol: TCP
+            targetPort: 6379
+        selector:
+          app.name: "{{ app }}-redis"
+
+- name: Create pvc for redis
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        namespace: "{{ openshift_namespace }}"
+        name: "{{ app }}-redis"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: "100Mi"
+        storageClassName: sopec
+        volumeMode: Filesystem
+
+- name: Create redis StatefulSet
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: StatefulSet
+      metadata:
+        name: "{{ app }}-redis"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        selector:
+          matchLabels:
+            app.name: "{{ app }}-redis"
+        serviceName: "{{ app }}-redis"
+        template:
+          metadata:
+            labels:
+              app.name: "{{ app }}-redis"
+          spec:
+            containers:
+              - image: quay-its.epfl.ch/svc0176/valkey:7.2.5-alpine
+                imagePullPolicy: IfNotPresent
+                name: "{{ app }}-redis"
+                stdin: true
+                tty: true
+                resources:
+                  requests:
+                    memory: "50Mi"
+                    cpu: "50m"
+                  limits:
+                    memory: "1000Mi"
+                volumeMounts:
+                  - mountPath: /data
+                    name: data
+                    subPath: ""
+            serviceAccount: "{{ app }}-srv-account"
+            serviceAccountName: "{{ app }}-srv-account"
+            volumes:
+              - name: data
+                persistentVolumeClaim:
+                  claimName: "{{ app }}-redis"

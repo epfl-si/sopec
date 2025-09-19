@@ -6,3 +6,4 @@ postgres_users:
   - rallly
   - grist
   - umami
+  - plane

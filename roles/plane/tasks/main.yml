@@ -1,0 +1,116 @@
+- name: Ensure Database
+  include_tasks:
+    file: postgres.yml
+    apply:
+      tags:
+        - plane.postgres
+  tags:
+    - plane.postgres
+
+- name: Create global resources
+  include_tasks:
+    file: global.yml
+    apply:
+      tags:
+        - plane.global
+  tags:
+    - plane.global
+
+- name: Create live resources
+  include_tasks:
+    file: live.yml
+    apply:
+      tags:
+        - plane.live
+  tags:
+    - plane.live
+
+- name: Create api resources
+  include_tasks:
+    file: api.yml
+    apply:
+      tags:
+        - plane.api
+  tags:
+    - plane.api
+
+- name: Create minio resources
+  include_tasks:
+    file: minio.yml
+    apply:
+      tags:
+        - plane.minio
+  tags:
+    - plane.minio
+
+- name: Create rabbitmq resources
+  include_tasks:
+    file: rabbitmq.yml
+    apply:
+      tags:
+        - plane.rabbitmq
+  tags:
+    - plane.rabbitmq
+
+- name: Create redis resources
+  include_tasks:
+    file: redis.yml
+    apply:
+      tags:
+        - plane.redis
+  tags:
+    - plane.redis
+
+- name: Create space resources
+  include_tasks:
+    file: space.yml
+    apply:
+      tags:
+        - plane.space
+  tags:
+    - plane.space
+
+- name: Create web resources
+  include_tasks:
+    file: web.yml
+    apply:
+      tags:
+        - plane.web
+  tags:
+    - plane.web
+
+- name: Create worker resources
+  include_tasks:
+    file: worker.yml
+    apply:
+      tags:
+        - plane.worker
+  tags:
+    - plane.worker
+
+- name: Create admin resources
+  include_tasks:
+    file: admin.yml
+    apply:
+      tags:
+        - plane.admin
+  tags:
+    - plane.admin
+
+- name: Create route resources
+  include_tasks:
+    file: route.yml
+    apply:
+      tags:
+        - plane.route
+  tags:
+    - plane.route
+
+- name: Create job
+  include_tasks:
+    file: job.yml
+    apply:
+      tags:
+        - plane.job
+  tags:
+    - plane.job

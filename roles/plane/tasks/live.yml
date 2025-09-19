@@ -1,0 +1,92 @@
+- name: Create service
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        namespace: "{{ openshift_namespace }}"
+        name: "{{ app }}-live"
+        labels:
+          app.name: "{{ app }}-live"
+      spec:
+        clusterIP: None
+        ports:
+          - name: live-3000
+            port: 3000
+            protocol: TCP
+            targetPort: 3000
+        selector:
+          app.name: "{{ app }}-live"
+
+- name: Create Deployment
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        namespace: "{{ openshift_namespace }}"
+        name: "{{ app }}-live"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app.name: "{{ app }}-live"
+        template:
+          metadata:
+            namespace: "{{ openshift_namespace }}"
+            labels:
+              app.name: "{{ app }}-live"
+          spec:
+            containers:
+              - name: "{{ app }}-live"
+                imagePullPolicy: Always
+                image: "quay-its.epfl.ch/svc0176/plane-live:stable"
+                stdin: true
+                tty: true
+                resources:
+                  requests:
+                    memory: "50Mi"
+                    cpu: "50m"
+                  limits:
+                    memory: "1000Mi"
+                    cpu: "500m"
+                envFrom:
+                  - configMapRef:
+                      name: "{{ app }}-live-vars"
+                      optional: false
+                  - secretRef:
+                      name: "{{ app }}-live-secrets"
+                      optional: false
+            serviceAccount: "{{ app }}-srv-account"
+            serviceAccountName: "{{ app }}-srv-account"
+
+- name: Create secrets
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      type: Opaque
+      metadata:
+        namespace: "{{ openshift_namespace }}"
+        name: "{{ app }}-live-secrets"
+      stringData:
+        REDIS_URL: "redis://{{ app }}-redis.{{ openshift_namespace }}.svc.cluster.local:6379/"
+
+- name: Create config map
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        namespace: "{{ openshift_namespace }}"
+        name: "{{ app }}-live-vars"
+      data:
+        API_BASE_URL: "http://{{ app }}-api.{{ openshift_namespace }}.svc.cluster.local:8000/"
+        LIVE_SENTRY_DSN: ""
+        LIVE_SENTRY_ENVIRONMENT: ""
+        LIVE_SENTRY_TRACES_SAMPLE_RATE: ""
+        LIVE_BASE_PATH: "/live"
