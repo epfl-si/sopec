@@ -1,0 +1,66 @@
+- name: Create endpoints config
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ app }}-config"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+      stringData:
+        config.yaml: |
+          security:
+            oidc:
+              issuer-url: "{{ secrets[openshift_env].oidc.issuer_url }}"
+              redirect-url: "https://{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}/authorization-code/callback"
+              client-id: "{{ secrets[openshift_env].oidc.client_id }}"
+              client-secret: "{{ secrets[openshift_env].oidc.client_secret }}"
+              scopes: ["openid"]
+          endpoints:
+            - conditions:
+                - "[STATUS] == 200"
+              interval: 60s
+              name: SiDoc
+              url: https://sidoc.epfl.ch
+            - conditions:
+                - "[STATUS] == 200"
+              interval: 60s
+              name: WP-Veritas
+              url: https://wp-veritas.epfl.ch
+            - conditions:
+                - "[STATUS] == 200"
+              interval: 60s
+              name: Social
+              url: https://social.epfl.ch
+            - conditions:
+                - "[STATUS] == 200"
+              interval: 60s
+              name: WWW
+              url: https://www.epfl.ch
+            - conditions:
+                - "[STATUS] == 200"
+              interval: 60s
+              name: EEEE
+              url: https://eeee.epfl.ch
+            - conditions:
+                - "[STATUS] == 200"
+              interval: 60s
+              name: People
+              url: https://people.epfl.ch
+            - conditions:
+                - "[STATUS] == 200"
+              interval: 60s
+              name: Actu
+              url: https://actu.epfl.ch
+            - conditions:
+                - "[STATUS] == 200"
+              interval: 60s
+              name: Memento
+              url: https://memento.epfl.ch
+            - conditions:
+                - "[STATUS] == 200"
+              interval: 60s
+              name: Go
+              url: https://go.epfl.ch
