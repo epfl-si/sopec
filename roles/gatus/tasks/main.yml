@@ -1,0 +1,17 @@
+- name: Ensure Config
+  include_tasks:
+    file: config.yml
+    apply:
+      tags:
+        - gatus.config
+  tags:
+    - gatus.config
+
+- name: Deploy Web Application
+  include_tasks:
+    file: web.yml
+    apply:
+      tags:
+        - gatus.web
+  tags:
+    - gatus.web
