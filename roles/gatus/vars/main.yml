@@ -1,0 +1,6 @@
+image: quay-its.epfl.ch/svc0176/gatus
+version: v5.24.0
+app: gatus
+subdomain: gatus
+secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/gatus/secrets.yml') | from_yaml }}"
+domain: fsd.epfl.ch
