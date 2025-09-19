@@ -32,3 +32,10 @@
     - role: roles/plane
   tags:
     - plane
+
+- name: gatus
+  hosts: all
+  roles:
+    - role: roles/gatus
+  tags:
+    - gatus
