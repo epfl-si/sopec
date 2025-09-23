@@ -46,3 +46,10 @@
     - role: roles/uptime-kuma
   tags:
     - uptime-kuma
+
+- name: n8n
+  hosts: all
+  roles:
+    - role: roles/n8n
+  tags:
+    - n8n
