@@ -1,0 +1,110 @@
+- name: Create service
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        selector:
+          app: "{{ app }}"
+        ports:
+          - name: "{{ app }}-svc-port"
+            protocol: TCP
+            port: 80
+            targetPort: http
+
+- name: Create Route
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: public-cf
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        to:
+          kind: Service
+          name: "{{ app }}"
+        port:
+          targetPort: "{{ app }}-svc-port"
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create Deployment
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 1
+        selector:
+          matchLabels:
+            app: "{{ app }}"
+        template:
+          metadata:
+            labels:
+              app: "{{ app }}"
+          spec:
+            containers:
+              - image: "{{ image }}:{{ version }}"
+                imagePullPolicy: Always
+                name: "{{ app }}"
+                ports:
+                  - containerPort: 3001
+                    name: http
+                resources:
+                  requests:
+                    cpu: 50m
+                    memory: 128Mi
+                  limits:
+                    memory: 512Mi
+                readinessProbe:
+                  httpGet:
+                    path: /
+                    port: 3001
+                  initialDelaySeconds: 30
+                  timeoutSeconds: 5
+                livenessProbe:
+                  httpGet:
+                    path: /
+                    port: 3001
+                  initialDelaySeconds: 30
+                  timeoutSeconds: 5
+                volumeMounts:
+                  - name: data-volume
+                    mountPath: /app/data
+            volumes:
+              - name: data-volume
+                persistentVolumeClaim:
+                  claimName: "{{ app }}-data"
+            imagePullSecrets:
+              - name: svc0176-pull-secret
+
+- name: Create PersistentVolumeClaim
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: "{{ app }}-data"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
