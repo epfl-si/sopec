@@ -1,0 +1,6 @@
+image: quay-its.epfl.ch/svc0176/uptime-kuma
+version: 2.0.0-beta.4
+app: uptime-kuma
+subdomain: kuma
+secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/uptime-kuma/secrets.yml') | from_yaml }}"
+domain: fsd.epfl.ch
