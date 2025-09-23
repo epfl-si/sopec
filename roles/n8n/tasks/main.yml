@@ -1,0 +1,26 @@
+- name: Ensure Secrets
+  include_tasks:
+    file: secrets.yml
+    apply:
+      tags:
+        - umami.secrets
+  tags:
+    - umami.secrets
+
+- name: Ensure PostgreSQL Database
+  include_tasks:
+    file: postgres.yml
+    apply:
+      tags:
+        - umami.postgres
+  tags:
+    - umami.postgres
+
+- name: Deploy Web Application
+  include_tasks:
+    file: web.yml
+    apply:
+      tags:
+        - umami.web
+  tags:
+    - umami.web
