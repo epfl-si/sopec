@@ -7,3 +7,4 @@ postgres_users:
   - grist
   - umami
   - plane
+  - n8n
