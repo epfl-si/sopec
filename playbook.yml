@@ -39,3 +39,10 @@
     - role: roles/gatus
   tags:
     - gatus
+
+- name: uptime-kuma
+  hosts: all
+  roles:
+    - role: roles/uptime-kuma
+  tags:
+    - uptime-kuma
