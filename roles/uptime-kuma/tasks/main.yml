@@ -1,0 +1,8 @@
+- name: Deploy Web Application
+  include_tasks:
+    file: web.yml
+    apply:
+      tags:
+        - uptime-kuma.web
+  tags:
+    - uptime-kuma.web
