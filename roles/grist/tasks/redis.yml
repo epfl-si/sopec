@@ -1,0 +1,74 @@
+- name: Create service
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}-redis"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        selector:
+          app: "{{ app }}"
+          component: redis
+        ports:
+          - name: "{{ app }}-svc-port"
+            protocol: TCP
+            port: 6379
+            targetPort: redis
+
+- name: Create Deployment
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}-redis"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 1
+        selector:
+          matchLabels:
+            app: "{{ app }}"
+            component: redis
+        template:
+          metadata:
+            labels:
+              app: "{{ app }}"
+              component: redis
+          spec:
+            containers:
+              - image: "quay-its.epfl.ch/svc0176/redis:8.0-M04"
+                imagePullPolicy: Always
+                name: "{{ app }}-redis"
+                ports:
+                  - containerPort: 6379
+                    name: redis
+                resources:
+                  requests:
+                    cpu: 10m
+                    memory: 64Mi
+                  limits:
+                    memory: 128Mi
+                volumeMounts:
+                  - name: redis-data
+                    mountPath: /data
+                readinessProbe:
+                  tcpSocket:
+                    port: 6379
+                  initialDelaySeconds: 5
+                  timeoutSeconds: 3
+                livenessProbe:
+                  tcpSocket:
+                    port: 6379
+                  initialDelaySeconds: 5
+                  timeoutSeconds: 3
+            imagePullSecrets:
+              - name: svc0176-pull-secret
+            volumes:
+              - name: redis-data
+                persistentVolumeClaim:
+                  claimName: "{{ app }}-data"
