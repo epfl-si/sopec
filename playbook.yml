@@ -53,3 +53,10 @@
     - role: roles/n8n
   tags:
     - n8n
+
+- name: grist
+  hosts: all
+  roles:
+    - role: roles/grist
+  tags:
+    - grist
