@@ -1,0 +1,44 @@
+- name: Ensure Secrets
+  include_tasks:
+    file: secrets.yml
+    apply:
+      tags:
+        - grist.secrets
+  tags:
+    - grist.secrets
+
+- name: Create Storage
+  include_tasks:
+    file: storage.yml
+    apply:
+      tags:
+        - grist.storage
+  tags:
+    - grist.storage
+
+- name: Ensure PostgreSQL Database
+  include_tasks:
+    file: postgres.yml
+    apply:
+      tags:
+        - grist.postgres
+  tags:
+    - grist.postgres
+
+- name: Deploy Redis
+  include_tasks:
+    file: redis.yml
+    apply:
+      tags:
+        - grist.redis
+  tags:
+    - grist.redis
+
+- name: Deploy Web Application
+  include_tasks:
+    file: web.yml
+    apply:
+      tags:
+        - grist.web
+  tags:
+    - grist.web
