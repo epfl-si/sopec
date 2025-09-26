@@ -1,0 +1,9 @@
+image: quay-its.epfl.ch/svc0176/grist-oss
+version: 1.6.1
+app: grist
+subdomain: grist
+secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/grist/secrets.yml') | from_yaml }}"
+domain: fsd.epfl.ch
+
+postgres_cluster:
+  name: postgres-cluster
