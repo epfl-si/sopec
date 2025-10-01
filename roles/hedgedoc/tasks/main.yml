@@ -1,0 +1,44 @@
+- name: Ensure Secrets
+  include_tasks:
+    file: secrets.yml
+    apply:
+      tags:
+        - hedgedoc.secrets
+  tags:
+    - hedgedoc.secrets
+
+- name: Create Storage
+  include_tasks:
+    file: storage.yml
+    apply:
+      tags:
+        - hedgedoc.storage
+  tags:
+    - hedgedoc.storage
+
+- name: Ensure PostgreSQL Database
+  include_tasks:
+    file: postgres.yml
+    apply:
+      tags:
+        - hedgedoc.postgres
+  tags:
+    - hedgedoc.postgres
+
+- name: Deploy Web Application
+  include_tasks:
+    file: web.yml
+    apply:
+      tags:
+        - hedgedoc.web
+  tags:
+    - hedgedoc.web
+
+- name: Deploy Backend Application
+  include_tasks:
+    file: backend.yml
+    apply:
+      tags:
+        - hedgedoc.backend
+  tags:
+    - hedgedoc.backend

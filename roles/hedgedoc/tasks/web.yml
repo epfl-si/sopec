@@ -1,0 +1,95 @@
+- name: Create service
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}-web"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        selector:
+          app: "{{ app }}"
+          component: web
+        ports:
+          - name: "{{ app }}-svc-port"
+            protocol: TCP
+            port: 80
+            targetPort: http
+
+- name: Create Deployment
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}-web"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 1
+        selector:
+          matchLabels:
+            app: "{{ app }}"
+            component: web
+        template:
+          metadata:
+            labels:
+              app: "{{ app }}"
+              component: web
+          spec:
+            containers:
+              - image: "{{ image }}-frontend:{{ version }}"
+                imagePullPolicy: Always
+                name: "{{ app }}-web"
+                ports:
+                  - containerPort: 3000
+                    name: http
+                envFrom:
+                  - secretRef:
+                      name: "{{ app }}-secrets"
+                env:
+                  - name: HD_INTERNAL_API_URL
+                    value: "http://{{ app }}-backend:3000"
+                resources:
+                  requests:
+                    cpu: 10m
+                    memory: 64Mi
+                  limits:
+                    memory: 256Mi
+                readinessProbe:
+                  tcpSocket:
+                    port: 3000
+                  initialDelaySeconds: 5
+                  timeoutSeconds: 3
+                livenessProbe:
+                  tcpSocket:
+                    port: 3000
+                  initialDelaySeconds: 5
+                  timeoutSeconds: 3
+            imagePullSecrets:
+              - name: svc0176-pull-secret
+
+- name: Create route
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        to:
+          kind: Service
+          name: "{{ app }}-web"
+        port:
+          targetPort: "{{ app }}-svc-port"
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect

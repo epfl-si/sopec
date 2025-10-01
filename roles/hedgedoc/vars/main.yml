@@ -1,0 +1,10 @@
+image: quay-its.epfl.ch/svc0176/hedgedoc
+version: develop
+app: hedgedoc
+subdomain: hedgedoc
+db_host: postgres-cluster-rw
+secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/hedgedoc/secrets.yml') | from_yaml }}"
+domain: fsd.epfl.ch
+
+postgres_cluster:
+  name: postgres-cluster

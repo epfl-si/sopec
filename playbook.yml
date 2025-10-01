@@ -11,3 +11,59 @@
     - role: roles/eeee
   tags:
     - eeee
+
+- name: umami
+  hosts: all
+  roles:
+    - role: roles/umami
+  tags:
+    - umami
+
+- name: oslf
+  hosts: all
+  roles:
+    - role: roles/oslf
+  tags:
+    - oslf
+
+- name: plane
+  hosts: all
+  roles:
+    - role: roles/plane
+  tags:
+    - plane
+
+- name: gatus
+  hosts: all
+  roles:
+    - role: roles/gatus
+  tags:
+    - gatus
+
+- name: uptime-kuma
+  hosts: all
+  roles:
+    - role: roles/uptime-kuma
+  tags:
+    - uptime-kuma
+
+- name: n8n
+  hosts: all
+  roles:
+    - role: roles/n8n
+  tags:
+    - n8n
+
+- name: grist
+  hosts: all
+  roles:
+    - role: roles/grist
+  tags:
+    - grist
+
+- name: hedgedoc
+  hosts: all
+  roles:
+    - role: roles/hedgedoc
+  tags:
+    - hedgedoc
