@@ -36,7 +36,7 @@
         name: postgres-cluster
         namespace: "{{ openshift_namespace }}"
       spec:
-        instances: 1
+        instances: 2
         backup:
           barmanObjectStore:
             destinationPath: "s3://{{ secrets[openshift_env].s3.name }}/{{ openshift_env }}"
@@ -57,6 +57,6 @@
             cpu: "100m"
             memory: "200Mi"
           limits:
-            memory: "1Gi"
+            memory: "600Mi"
         managed:
           roles: "{{ postgres_roles }}"
