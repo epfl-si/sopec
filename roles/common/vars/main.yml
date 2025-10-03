@@ -8,3 +8,5 @@ postgres_users:
   - umami
   - plane
   - n8n
+  - authentik
+  - kuma
