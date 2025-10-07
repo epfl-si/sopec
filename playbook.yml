@@ -60,3 +60,10 @@
     - role: roles/grist
   tags:
     - grist
+
+- name: peekaping
+  hosts: all
+  roles:
+    - role: roles/peekaping
+  tags:
+    - peekaping
