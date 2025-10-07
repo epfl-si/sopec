@@ -1,0 +1,11 @@
+image: quay-its.epfl.ch/svc0176/peekaping-server
+web_image: quay-its.epfl.ch/svc0176/peekaping-web
+migrate_image: quay-its.epfl.ch/svc0176/peekaping-migrate
+version: 0.0.40
+app: peekaping
+subdomain: peekaping
+secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/peekaping/secrets.yml') | from_yaml }}"
+domain: fsd.epfl.ch
+
+postgres_cluster:
+  name: postgres-cluster

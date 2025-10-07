@@ -1,0 +1,101 @@
+- name: Create web service
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}-web"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        selector:
+          app: "{{ app }}"
+          component: web
+        ports:
+          - name: "{{ app }}-web-port"
+            protocol: TCP
+            port: 80
+            targetPort: 8080
+
+- name: Create web Route
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: public-cf
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        to:
+          kind: Service
+          name: "{{ app }}-web"
+        port:
+          targetPort: "{{ app }}-web-port"
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create Web Deployment
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}-web"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 1
+        selector:
+          matchLabels:
+            app: "{{ app }}"
+            component: web
+        template:
+          metadata:
+            labels:
+              app: "{{ app }}"
+              component: web
+          spec:
+            containers:
+              - image: "{{ web_image }}:{{ version }}"
+                imagePullPolicy: Always
+                name: "{{ app }}-web"
+                ports:
+                  - containerPort: 8080
+                resources:
+                  requests:
+                    cpu: 25m
+                    memory: 64Mi
+                  limits:
+                    cpu: 100m
+                    memory: 256Mi
+                readinessProbe:
+                  httpGet:
+                    path: /
+                    port: 8080
+                  initialDelaySeconds: 5
+                  timeoutSeconds: 3
+                livenessProbe:
+                  httpGet:
+                    path: /
+                    port: 8080
+                  initialDelaySeconds: 10
+                  timeoutSeconds: 3
+                volumeMounts:
+                  - name: nginx-cache
+                    mountPath: /var/cache/nginx
+                  - name: nginx-run
+                    mountPath: /var/run
+            volumes:
+              - name: nginx-cache
+                emptyDir: {}
+              - name: nginx-run
+                emptyDir: {}
+            imagePullSecrets:
+              - name: svc0176-pull-secret

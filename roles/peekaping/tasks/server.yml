@@ -1,0 +1,117 @@
+- name: Create server service
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}-server"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        selector:
+          app: "{{ app }}"
+          component: server
+        ports:
+          - name: "{{ app }}-server-port"
+            protocol: TCP
+            port: 80
+            targetPort: 8034
+
+- name: Create server Route
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-api"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: public-cf
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        path: "/api"
+        to:
+          kind: Service
+          name: "{{ app }}-server"
+        port:
+          targetPort: "{{ app }}-server-port"
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create socket.io Route
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-socket"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: public-cf
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        path: "/socket.io"
+        to:
+          kind: Service
+          name: "{{ app }}-server"
+        port:
+          targetPort: "{{ app }}-server-port"
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create Server Deployment
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}-server"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 1
+        selector:
+          matchLabels:
+            app: "{{ app }}"
+            component: server
+        template:
+          metadata:
+            labels:
+              app: "{{ app }}"
+              component: server
+          spec:
+            containers:
+              - image: "{{ image }}:{{ version }}"
+                imagePullPolicy: Always
+                name: "{{ app }}-server"
+                ports:
+                  - containerPort: 8034
+                envFrom:
+                  - secretRef:
+                      name: "{{ app }}-secrets"
+                resources:
+                  requests:
+                    cpu: 10m
+                    memory: 128Mi
+                  limits:
+                    memory: 512Mi
+                readinessProbe:
+                  httpGet:
+                    path: /api/v1/health
+                    port: 8034
+                  initialDelaySeconds: 10
+                  timeoutSeconds: 5
+                livenessProbe:
+                  httpGet:
+                    path: /api/v1/health
+                    port: 8034
+                  initialDelaySeconds: 15
+                  timeoutSeconds: 5
+            imagePullSecrets:
+              - name: svc0176-pull-secret

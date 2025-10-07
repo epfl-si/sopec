@@ -1,0 +1,44 @@
+- name: Ensure Secrets
+  include_tasks:
+    file: secrets.yml
+    apply:
+      tags:
+        - peekaping.secrets
+  tags:
+    - peekaping.secrets
+
+- name: Ensure PostgreSQL Database
+  include_tasks:
+    file: postgres.yml
+    apply:
+      tags:
+        - peekaping.postgres
+  tags:
+    - peekaping.postgres
+
+- name: Run Database Migration
+  include_tasks:
+    file: migrate.yml
+    apply:
+      tags:
+        - peekaping.migrate
+  tags:
+    - peekaping.migrate
+
+- name: Deploy Server Application
+  include_tasks:
+    file: server.yml
+    apply:
+      tags:
+        - peekaping.server
+  tags:
+    - peekaping.server
+
+- name: Deploy Web Application
+  include_tasks:
+    file: web.yml
+    apply:
+      tags:
+        - peekaping.web
+  tags:
+    - peekaping.web
