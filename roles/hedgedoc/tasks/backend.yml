@@ -13,7 +13,7 @@
         ports:
           - name: "{{ app }}-svc-port"
             protocol: TCP
-            port: 80
+            port: 3000
             targetPort: http
 
 - name: Create Deployment
@@ -68,25 +68,3 @@
                   timeoutSeconds: 3
             imagePullSecrets:
               - name: svc0176-pull-secret
-
-- name: Create route
-  kubernetes.core.k8s:
-    definition:
-      apiVersion: route.openshift.io/v1
-      kind: Route
-      metadata:
-        name: "{{ app }}"
-        namespace: "{{ openshift_namespace }}"
-        labels:
-          app: "{{ app }}"
-          route: "public-cf"
-      spec:
-        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
-        to:
-          kind: Service
-          name: "{{ app }}-backend"
-        port:
-          targetPort: "{{ app }}-svc-port"
-        tls:
-          termination: edge
-          insecureEdgeTerminationPolicy: Redirect

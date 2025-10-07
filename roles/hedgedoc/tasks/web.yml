@@ -45,7 +45,7 @@
                 imagePullPolicy: Always
                 name: "{{ app }}-web"
                 ports:
-                  - containerPort: 3000
+                  - containerPort: 3001
                     name: http
                 envFrom:
                   - secretRef:
@@ -61,12 +61,12 @@
                     memory: 256Mi
                 readinessProbe:
                   tcpSocket:
-                    port: 3000
+                    port: 3001
                   initialDelaySeconds: 5
                   timeoutSeconds: 3
                 livenessProbe:
                   tcpSocket:
-                    port: 3000
+                    port: 3001
                   initialDelaySeconds: 5
                   timeoutSeconds: 3
             imagePullSecrets:
@@ -88,6 +88,121 @@
         to:
           kind: Service
           name: "{{ app }}-web"
+        port:
+          targetPort: "{{ app }}-svc-port"
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create route /realtime
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-realtime"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        to:
+          kind: Service
+          name: "{{ app }}-backend"
+        path: "/realtime"
+        port:
+          targetPort: "{{ app }}-svc-port"
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create route /api/*
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-api"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        to:
+          kind: Service
+          name: "{{ app }}-backend"
+        path: "/api/"
+        port:
+          targetPort: "{{ app }}-svc-port"
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create route /public/*
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-public"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        to:
+          kind: Service
+          name: "{{ app }}-backend"
+        path: "/public/"
+        port:
+          targetPort: "{{ app }}-svc-port"
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create route /uploads/*
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-uploads"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        to:
+          kind: Service
+          name: "{{ app }}-backend"
+        path: "/uploads/"
+        port:
+          targetPort: "{{ app }}-svc-port"
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create route /media/*
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-media"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        to:
+          kind: Service
+          name: "{{ app }}-backend"
+        path: "/media/"
         port:
           targetPort: "{{ app }}-svc-port"
         tls:
