@@ -49,7 +49,7 @@
                 name: s3-credentials
                 key: AWS_SECRET_ACCESS_KEY
         storage:
-          size: "10Gi"
+          size: "1Gi"
           storageClass: "sopec"
         enableSuperuserAccess: true
         resources:
