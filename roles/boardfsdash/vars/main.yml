@@ -1,0 +1,6 @@
+image: quay-its.epfl.ch/svc0176/boardfsdash
+version: 1.0.0
+app: boardfsdash
+subdomain: boardfsdash
+secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/boardfsdash/secrets.yml') | from_yaml }}"
+domain: fsd.epfl.ch

@@ -1,0 +1,17 @@
+- name: Ensure Secrets
+  include_tasks:
+    file: secrets.yml
+    apply:
+      tags:
+        - boardfsdash.secrets
+  tags:
+    - boardfsdash.secrets
+
+- name: Deploy Web Application
+  include_tasks:
+    file: web.yml
+    apply:
+      tags:
+        - boardfsdash.web
+  tags:
+    - boardfsdash.web
