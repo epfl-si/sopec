@@ -25,7 +25,7 @@
         namespace: "{{ openshift_namespace }}"
         labels:
           app: "{{ app }}"
-          route: private
+          route: public-cf
       spec:
         host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
         to:
@@ -68,6 +68,9 @@
                 envFrom:
                   - secretRef:
                       name: "{{ app }}-secrets"
+                volumeMounts:
+                  - name: boardfsdash-data
+                    mountPath: /app/data
                 resources:
                   requests:
                     cpu: 50m
@@ -87,3 +90,7 @@
                   timeoutSeconds: 3
             imagePullSecrets:
               - name: svc0176-pull-secret
+            volumes:
+              - name: boardfsdash-data
+                persistentVolumeClaim:
+                  claimName: "{{ app }}-data"

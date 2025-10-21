@@ -7,6 +7,15 @@
   tags:
     - boardfsdash.secrets
 
+- name: Create Storage
+  include_tasks:
+    file: storage.yml
+    apply:
+      tags:
+        - boardfsdash.storage
+  tags:
+    - boardfsdash.storage
+
 - name: Deploy Web Application
   include_tasks:
     file: web.yml
