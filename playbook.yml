@@ -60,3 +60,10 @@
     - role: roles/grist
   tags:
     - grist
+
+- name: boardfsdash
+  hosts: all
+  roles:
+    - role: roles/boardfsdash
+  tags:
+    - boardfsdash
