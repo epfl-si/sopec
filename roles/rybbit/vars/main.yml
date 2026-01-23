@@ -1,9 +1,0 @@
-image: quay-its.epfl.ch/svc0176/rybbit
-version: #à voir
-app: rybbit
-subdomain: rybbit
-secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/rybbit/secrets.yml') | from_yaml }}"
-domain: rybbit.fsd.team
-
-postgres_cluster:
-  name: postgres-cluster
