@@ -36,9 +36,15 @@
         name: postgres-cluster
         namespace: "{{ openshift_namespace }}"
       spec:
-        instances: 2
+        instances: 3
+        primaryUpdateStrategy: unsupervised
         backup:
           barmanObjectStore:
+            data:
+              compression: snappy
+            wal:
+              compression: snappy
+              maxParallel: 8
             destinationPath: "s3://{{ secrets[openshift_env].s3.name }}/{{ openshift_env }}"
             endpointURL: "https://{{ secrets[openshift_env].s3.host }}"
             s3Credentials:
@@ -51,12 +57,39 @@
         storage:
           size: "1Gi"
           storageClass: "sopec"
+        monitoring:
+          enablePodMonitor: true
         enableSuperuserAccess: true
+        env:
+          - name: AWS_REQUEST_CHECKSUM_CALCULATION
+            value: WHEN_REQUIRED
+          - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+            value: WHEN_REQUIRED
+        postgresql:
+          parameters:
+            max_connections: "600"
+            max_slot_wal_keep_size: 3GB
+            shared_buffers: 256MB
         resources:
           requests:
             cpu: "100m"
-            memory: "200Mi"
+            memory: "600Mi"
           limits:
             memory: "600Mi"
         managed:
           roles: "{{ postgres_roles }}"
+
+- name: Create scheduled backup
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      kind: ScheduledBackup
+      apiVersion: postgresql.cnpg.io/v1
+      metadata:
+        name: "cluster-scheduled-backup"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        schedule: "0 0 2 * * *"
+        backupOwnerReference: "self"
+        cluster:
+          name: postgres-cluster
