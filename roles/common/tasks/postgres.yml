@@ -75,7 +75,7 @@
             cpu: "100m"
             memory: "600Mi"
           limits:
-            memory: "600Mi"
+            memory: "1Gi"
         managed:
           roles: "{{ postgres_roles }}"
 

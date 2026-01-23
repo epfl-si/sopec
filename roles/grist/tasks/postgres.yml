@@ -32,18 +32,3 @@
         owner: "{{ app + '-user' }}"
         passwordSecret:
           name: "{{ app }}-db-credentials"
-
-- name: Create scheduled backup
-  kubernetes.core.k8s:
-    state: present
-    definition:
-      kind: ScheduledBackup
-      apiVersion: postgresql.cnpg.io/v1
-      metadata:
-        name: "{{ app }}-scheduled-backup"
-        namespace: "{{ openshift_namespace }}"
-      spec:
-        schedule: "0 2 * * *"
-        backupOwnerReference: "self"
-        cluster:
-          name: "{{ postgres_cluster.name }}"
