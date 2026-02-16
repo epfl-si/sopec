@@ -1,0 +1,9 @@
+image: quay-its.epfl.ch/svc0176/palmr
+version: 1.0
+app: palmr
+subdomain: palmr
+secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/palmr/secrets.yml') | from_yaml }}"
+domain: fsd.epfl.ch
+
+postgres_cluster:
+  name: postgres-cluster

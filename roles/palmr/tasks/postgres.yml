@@ -1,0 +1,34 @@
+- name: Create database credentials secret
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ app }}-db-credentials"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          cnpg.io/reload: "true"
+      type: kubernetes.io/basic-auth
+      stringData:
+        username: "{{ app + '-user' }}"
+        password: "{{ secrets[openshift_env].database.password }}"
+        database: "{{ app + '-db' }}"
+
+- name: Create Database in MariaDB Cluster
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Database
+      metadata:
+        name: "{{ app }}"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        cluster:
+          name: "{{ mariadb_cluster.name }}"
+        name: "{{ app + '-db' }}"
+        owner: "{{ app + '-user' }}"
+        passwordSecret:
+          name: "{{ app }}-db-credentials"

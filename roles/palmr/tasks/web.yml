@@ -1,0 +1,14 @@
+- name: Create Service
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}-web"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        selector:
+          app: "{{ app }}"
+          component: web
+        ports:
+          - name:

@@ -26,6 +26,13 @@
   tags:
     - oslf
 
+- name: palmr
+  hosts: all
+  roles:
+    - role: roles/palmr
+  tags:
+    - palmr
+
 - name: plane
   hosts: all
   roles:

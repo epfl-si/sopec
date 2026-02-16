@@ -1,0 +1,35 @@
+- name: Ensure Secrets
+  include_tasks:
+    file: secrets.yml
+    apply:
+      tags:
+        - palmr.secrets
+  tags:
+    - palmr.secrets
+
+- name: Create Storage
+  include_tasks:
+    file: storage.yml
+    apply:
+      tags:
+        - palmr.storage
+  tags:
+    - palmr.storage
+
+- name: Ensure Postgres Database
+  include_tasks:
+    file: postgres.yml
+    apply:
+      tags:
+        - palmr.mariadb
+  tags:
+    - palmr.mariadb
+
+- name: Deploy Web Application
+  include_tasks:
+    file: web.yml
+    apply:
+      tags:
+        - palmr.web
+  tags:
+    - palmr.web
