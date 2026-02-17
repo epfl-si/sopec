@@ -67,19 +67,19 @@
                     mountPath: /persist
                 readinessProbe:
                   tcpSocket:
-                    port:
+                    port: 3333
                   initialDelaySeconds: 5
                   timeoutSeconds: 3
                 livenessProbe:
                   tcpSocket:
-                    port:
+                    port: 3333
                   initialDelaySeconds: 5
                   timeoutSeconds: 3
             imagePullSecrets:
               - name: svc0176-pull-secret
             volumes:
               - name: palmr-data
-                persistenVolumeClaim:
+                persistentVolumeClaim:
                   claimName: "{{ app }}-data"
 
 - name: Create route frontend
@@ -94,7 +94,7 @@
           app: "{{ app }}"
           route: "public-cf"
       spec:
-        host: "{{ subdomain }}{% if opendshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
         to:
           kind: Service
           name: "{{ app }}-web"
