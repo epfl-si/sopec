@@ -11,4 +11,120 @@
           app: "{{ app }}"
           component: web
         ports:
-          - name:
+          - name: "{{ app }}-front-port"
+            protocol: TCP
+            port: 80
+            targetPort: 3000
+          - name: "{{ app }}-back-port"
+            protocol: TCP
+            port: 3333
+            targetPort: 3333
+
+- name: Create Deployment
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}-web"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 1
+        selector:
+          matchLabels:
+            app: "{{ app }}"
+            component: web
+        template:
+          metadata:
+            labels:
+              app: "{{ app }}"
+              component: web
+          spec:
+            containers:
+              - image: "{{ image }}:{{ version }}"
+                imagePullPolicy: Always
+                name: "{{ app }}-web"
+                ports:
+                  - containerPort: 3000
+                    name: frontend
+                  - containerPort: 3333
+                    name: backend
+                envFrom:
+                  - secretRef:
+                      name: "{{ app }}-secrets"
+                resources:
+                  requests:
+                    cpu: 10m
+                    memory: 64Mi
+                  limits:
+                    memory: 350Mi
+                volumeMounts:
+                  - name: palmr-data
+                    mountPath: /persist
+                readinessProbe:
+                  tcpSocket:
+                    port:
+                  initialDelaySeconds: 5
+                  timeoutSeconds: 3
+                livenessProbe:
+                  tcpSocket:
+                    port:
+                  initialDelaySeconds: 5
+                  timeoutSeconds: 3
+            imagePullSecrets:
+              - name: svc0176-pull-secret
+            volumes:
+              - name: palmr-data
+                persistenVolumeClaim:
+                  claimName: "{{ app }}-data"
+
+- name: Create route frontend
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-frontend"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if opendshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        to:
+          kind: Service
+          name: "{{ app }}-web"
+        port:
+          targetPort: "{{ app }}-front-port"
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+- name: Create route backend
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}-backend"
+        namespace: "{{ openshift_namespace }}"
+        annotations:
+          haproxy.router.openshift.io/rewrite-target: /
+        labels:
+          app: "{{ app }}"
+          route: "public-cf"
+      spec:
+        host: "{{ subdomain }}{% if opendshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        path: "/api"
+        to:
+          kind: Service
+          name: "{{ app }}-web"
+        port:
+          targetPort: "{{ app }}-back-port"
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
