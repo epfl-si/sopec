@@ -11,14 +11,10 @@
           app: "{{ app }}"
           component: web
         ports:
-          - name: "{{ app }}-front-port"
+          - name: "{{ app }}-port"
             protocol: TCP
             port: 80
-            targetPort: 3000
-          - name: "{{ app }}-back-port"
-            protocol: TCP
-            port: 3333
-            targetPort: 3333
+            targetPort: frontend
 
 - name: Create Deployment
   kubernetes.core.k8s:
@@ -51,80 +47,54 @@
                 ports:
                   - containerPort: 3000
                     name: frontend
-                  - containerPort: 3333
-                    name: backend
                 envFrom:
                   - secretRef:
                       name: "{{ app }}-secrets"
                 resources:
                   requests:
                     cpu: 10m
-                    memory: 64Mi
+                    memory: 350Mi
                   limits:
                     memory: 350Mi
                 volumeMounts:
-                  - name: palmr-data
-                    mountPath: /persist
+                  - name: zipline-data
+                    mountPath: /app/server
+
                 readinessProbe:
                   tcpSocket:
-                    port: 3333
+                    port: 3000
                   initialDelaySeconds: 5
                   timeoutSeconds: 3
                 livenessProbe:
                   tcpSocket:
-                    port: 3333
+                    port: 3000
                   initialDelaySeconds: 5
                   timeoutSeconds: 3
             imagePullSecrets:
               - name: svc0176-pull-secret
             volumes:
-              - name: palmr-data
+              - name: zipline-data
                 persistentVolumeClaim:
                   claimName: "{{ app }}-data"
 
-- name: Create route frontend
+- name: Create route
   kubernetes.core.k8s:
     definition:
       apiVersion: route.openshift.io/v1
       kind: Route
       metadata:
-        name: "{{ app }}-frontend"
+        name: "{{ app }}"
         namespace: "{{ openshift_namespace }}"
         labels:
           app: "{{ app }}"
           route: "public-cf"
       spec:
-        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+        host: "{{ app }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
         to:
           kind: Service
           name: "{{ app }}-web"
         port:
-          targetPort: "{{ app }}-front-port"
-        tls:
-          termination: edge
-          insecureEdgeTerminationPolicy: Redirect
-
-- name: Create route backend
-  kubernetes.core.k8s:
-    definition:
-      apiVersion: route.openshift.io/v1
-      kind: Route
-      metadata:
-        name: "{{ app }}-backend"
-        namespace: "{{ openshift_namespace }}"
-        annotations:
-          haproxy.router.openshift.io/rewrite-target: /
-        labels:
-          app: "{{ app }}"
-          route: "public-cf"
-      spec:
-        host: "{{ subdomain }}{% if opendshift_env == 'test' %}-test{% endif %}.{{ domain }}"
-        path: "/api"
-        to:
-          kind: Service
-          name: "{{ app }}-web"
-        port:
-          targetPort: "{{ app }}-back-port"
+          targetPort: "{{ app }}-port"
         tls:
           termination: edge
           insecureEdgeTerminationPolicy: Redirect

@@ -16,18 +16,18 @@
         password: "{{ secrets[openshift_env].database.password }}"
         database: "{{ app + '-db' }}"
 
-- name: Create Database in MariaDB Cluster
+- name: Create Database in PostgreSQL Cluster
   kubernetes.core.k8s:
     state: present
     definition:
-      apiVersion: apps/v1
+      apiVersion: postgresql.cnpg.io/v1
       kind: Database
       metadata:
         name: "{{ app }}"
         namespace: "{{ openshift_namespace }}"
       spec:
         cluster:
-          name: "{{ mariadb_cluster.name }}"
+          name: "{{ postgres_cluster.name }}"
         name: "{{ app + '-db' }}"
         owner: "{{ app + '-user' }}"
         passwordSecret:

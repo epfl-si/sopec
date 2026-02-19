@@ -3,33 +3,24 @@
     file: secrets.yml
     apply:
       tags:
-        - palmr.secrets
+        - zipline.secrets
   tags:
-    - palmr.secrets
-
-- name: Create Storage
-  include_tasks:
-    file: storage.yml
-    apply:
-      tags:
-        - palmr.storage
-  tags:
-    - palmr.storage
+    - zipline.secrets
 
 - name: Ensure Postgres Database
   include_tasks:
     file: postgres.yml
     apply:
       tags:
-        - palmr.mariadb
+        - zipline.postgres
   tags:
-    - palmr.mariadb
+    - zipline.postgres
 
 - name: Deploy Web Application
   include_tasks:
     file: web.yml
     apply:
       tags:
-        - palmr.web
+        - zipline.web
   tags:
-    - palmr.web
+    - zipline.web
