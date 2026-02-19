@@ -1,0 +1,10 @@
+image: ghcr.io/diced/zipline
+version: latest
+app: zipline
+subdomain: zipline
+secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/zipline/secrets.yml') | from_yaml }}"
+domain: fsd.epfl.ch
+
+postgres_cluster:
+  name: postgres-cluster
+  host: postgres-cluster-rw

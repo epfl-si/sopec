@@ -26,6 +26,13 @@
   tags:
     - oslf
 
+- name: zipline
+  hosts: all
+  roles:
+    - role: roles/zipline
+  tags:
+    - zipline
+
 - name: plane
   hosts: all
   roles:
