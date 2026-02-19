@@ -26,12 +26,12 @@
   tags:
     - oslf
 
-- name: palmr
+- name: zipline
   hosts: all
   roles:
-    - role: roles/palmr
+    - role: roles/zipline
   tags:
-    - palmr
+    - zipline
 
 - name: plane
   hosts: all
