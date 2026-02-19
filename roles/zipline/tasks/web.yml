@@ -56,9 +56,6 @@
                     memory: 350Mi
                   limits:
                     memory: 350Mi
-                volumeMounts:
-                  - name: zipline-data
-                    mountPath: /app/server
 
                 readinessProbe:
                   tcpSocket:
@@ -72,10 +69,7 @@
                   timeoutSeconds: 3
             imagePullSecrets:
               - name: svc0176-pull-secret
-            volumes:
-              - name: zipline-data
-                persistentVolumeClaim:
-                  claimName: "{{ app }}-data"
+
 
 - name: Create route
   kubernetes.core.k8s:
