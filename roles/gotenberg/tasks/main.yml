@@ -1,0 +1,93 @@
+- name: Create service
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        selector:
+          app: "{{ app }}"
+        ports:
+          - name: "{{ app }}-svc-port"
+            protocol: TCP
+            port: 3000
+            targetPort: 3000
+
+- name: Create Deployment
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 1
+        selector:
+          matchLabels:
+            app: "{{ app }}"
+        template:
+          metadata:
+            labels:
+              app: "{{ app }}"
+          spec:
+            containers:
+              - image: "{{ image }}:{{ version }}"
+                imagePullPolicy: Always
+                name: "{{ app }}"
+                securityContext:
+                  readOnlyRootFilesystem: false
+                  allowPrivilegeEscalation: false
+                  privileged: false
+                  runAsNonRoot: true
+                ports:
+                  - containerPort: 3000
+                resources:
+                  requests:
+                    cpu: "10m"
+                    memory: "512Mi"
+                  limits:
+                    memory: "512Mi"
+                readinessProbe:
+                  tcpSocket:
+                    port: 3000
+                  initialDelaySeconds: 5
+                  timeoutSeconds: 3
+                livenessProbe:
+                  tcpSocket:
+                    port: 3000
+                  initialDelaySeconds: 5
+                  timeoutSeconds: 3
+                env:
+                - name: CHROMIUM_DISABLE_SANDBOX
+                  value: "true"
+                - name: TMPDIR
+                  value: /tmp
+                volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+                - name: gotenberg-tmp
+                  mountPath: /gotenberg/tmp
+                - name: chromium-tmp
+                  mountPath: /.local
+                - name: chromium-config
+                  mountPath: /.config
+                - name: chromium-cache
+                  mountPath: /.cache
+            volumes:
+            - name: tmp
+              emptyDir: {}
+            - name: gotenberg-tmp
+              emptyDir: {}
+            - name: chromium-tmp
+              emptyDir: {}
+            - name: chromium-config
+              emptyDir: {}
+            - name: chromium-cache
+              emptyDir: {}

@@ -74,3 +74,9 @@
     - role: roles/boardfsdash
   tags:
     - boardfsdash
+- name: gotenberg
+  hosts: all
+  roles:
+    - role: roles/gotenberg
+  tags:
+    - gotenberg
