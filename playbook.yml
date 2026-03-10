@@ -74,9 +74,17 @@
     - role: roles/boardfsdash
   tags:
     - boardfsdash
+
 - name: gotenberg
   hosts: all
   roles:
     - role: roles/gotenberg
   tags:
     - gotenberg
+
+- name: rapport-de-stage
+  hosts: all
+  roles:
+    - role: roles/rapport-de-stage
+  tags:
+    - rapport-de-stage
