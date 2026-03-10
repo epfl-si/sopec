@@ -61,7 +61,7 @@
           spec:
             initContainers:
               - name: copy-app
-                image: "{{ image }}:postgresql-v{{ version }}"
+                image: "{{ image }}:{{ version }}"
                 command:
                   - cp
                   - "-r"
@@ -77,7 +77,7 @@
                   - name: v
                     mountPath: /tmp/umami-app
             containers:
-              - image: "{{ image }}:postgresql-v{{ version }}"
+              - image: "{{ image }}:{{ version }}"
                 imagePullPolicy: Always
                 name: "{{ app }}"
                 ports:

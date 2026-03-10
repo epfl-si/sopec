@@ -1,5 +1,5 @@
 image: quay-its.epfl.ch/svc0176/umami
-version: 2.19.0
+version: 3.0.3
 app: umami
 subdomain: umami
 secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/umami/secrets.yml') | from_yaml }}"

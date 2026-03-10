@@ -10,3 +10,4 @@ postgres_users:
   - kuma
   - peekaping
   - zipline
+  - ctfd
