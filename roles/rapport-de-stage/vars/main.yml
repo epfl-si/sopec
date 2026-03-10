@@ -1,0 +1,5 @@
+image: quay-its.epfl.ch/svc0176/rapport-de-stage
+version: 1.9
+app: rapport-de-stage
+subdomain: rapport-de-stage
+domain: fsd.epfl.ch
