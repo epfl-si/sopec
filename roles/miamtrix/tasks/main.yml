@@ -1,4 +1,4 @@
-- name: Ensure Secreta
+- name: Ensure Secrets
   include_tasks:
     file: secrets.yml
     apply:

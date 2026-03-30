@@ -10,11 +10,11 @@
         labels:
           app: "{{ app }}"
           cnpg.io/reload: "true"
-        type: kubernetes.io/basic-auth
-        stringData:
-          username: "{{ app + '-user' }}"
-          password: "{{ secrets[openshift_env].database.password }}"
-          database: "{{ app + '-db' }}"
+      type: kubernetes.io/basic-auth
+      stringData:
+        username: "{{ app + '-user' }}"
+        password: "{{ secrets[openshift_env].database.password }}"
+        database: "{{ app + '-db' }}"
 
 - name: Create Database in PostgreSQL Cluster
   kubernetes.core.k8s:
@@ -29,6 +29,6 @@
         cluster:
           name: "{{ postgres_cluster.name }}"
         name: "{{ app + '-db' }}"
-        owner: "{{ app + '-user }}"
+        owner: "{{ app + '-user' }}"
         passwordSecret:
           name: "{{ app }}-db-credentials"

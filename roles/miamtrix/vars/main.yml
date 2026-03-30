@@ -5,3 +5,4 @@ secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_matrix/miamtrix_
 
 postgres_cluster:
   name: postgres-cluster
+  host: postgres-cluster-rw
