@@ -88,3 +88,10 @@
     - role: roles/rapport-de-stage
   tags:
     - rapport-de-stage
+
+- name: miamtrix
+  hosts: all
+  roles:
+    - role: roles/miamtrix
+  tags:
+    - miamtrix

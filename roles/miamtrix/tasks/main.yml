@@ -1,0 +1,26 @@
+- name: Ensure Secreta
+  include_tasks:
+    file: secrets.yml
+    apply:
+      tags:
+        - miamtrix.secrets
+  tags:
+    - miamtrix.secrets
+
+- name: Ensure Postgres Database
+  include_tasks:
+    file: postgres.yml
+    apply:
+      tags:
+        - miamtrix.postgres
+  tags:
+    - miamtrix.postrgres
+
+- name: Deploy Bot
+  include_tasks:
+    file: bot.yml
+    apply:
+      tags:
+        - miamtrix.bot
+  tags:
+    - miamtrix.bot

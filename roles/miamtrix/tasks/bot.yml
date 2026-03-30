@@ -1,0 +1,43 @@
+- name: Create Deployment
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}-web"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        strategy:
+          type: Recreate
+        selector:
+          app: "{{ app }}"
+          component: bot
+        template:
+          metadata:
+            labels:
+              app: "{{ app }}"
+              component: "{{ app }}"
+          spec:
+            volumes:
+              - name: bot-data
+                persistenVolumeClaim:
+                  claimName: "{{ app }}-data-pvc"
+            containers:
+              - image: "{{ image }}:{{ version }}"
+                imagePullPolicy: Always
+                name: "{{ app }}"
+                envFrom:
+                  - secretRef:
+                      name: "{{ app }}-secrets"
+                volumeMounts:
+                  - name: bot-data
+                    mountPath: /data
+                resources:
+                  requests:
+                    cpu: 10m
+                    memory: 150Mi
+                  limits:
+                    memory: 350Mi
+            imagePullSecrets:
+              - name: svc0176-pull-secret
