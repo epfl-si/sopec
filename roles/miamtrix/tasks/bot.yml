@@ -20,10 +20,6 @@
               app: "{{ app }}"
               component: bot
           spec:
-            volumes:
-              - name: bot-data
-                persistentVolumeClaim:
-                  claimName: "{{ app }}-data"
             containers:
               - image: "{{ image }}:{{ version }}"
                 imagePullPolicy: Always
@@ -31,9 +27,6 @@
                 envFrom:
                   - secretRef:
                       name: "{{ app }}-secrets"
-                volumeMounts:
-                  - name: bot-data
-                    mountPath: /data
                 resources:
                   requests:
                     cpu: 10m
@@ -42,18 +35,3 @@
                     memory: 350Mi
             imagePullSecrets:
               - name: svc0176-pull-secret
-
-- name: Create persistent Volume
-  kubernetes.core.k8s:
-    definition:
-      apiVersion: v1
-      kind: PersistentVolumeClaim
-      metadata:
-        name: "{{ app }}-data"
-        namespace: "{{ openshift_namespace }}"
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
