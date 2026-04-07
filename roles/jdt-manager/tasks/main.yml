@@ -1,0 +1,26 @@
+- name: Ensure Secrets
+  include_tasks:
+    file: secrets.yml
+    apply:
+      tags:
+        - jdt-manager.secrets
+  tags:
+    - jdt-manager.secrets
+
+- name: Ensure Postgres Database
+  include_tasks:
+    file: postgres.yml
+    apply:
+      tags:
+        - jdt-manager.postgres
+  tags:
+    - jdt-manager.postrgres
+
+- name: Deploy Web Application
+  include_tasks:
+    file: web.yml
+    apply:
+      tags:
+        - jdt-manager.web
+  tags:
+    - jdt-manager.web
