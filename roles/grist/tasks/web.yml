@@ -53,9 +53,9 @@
                 resources:
                   requests:
                     cpu: 10m
-                    memory: 64Mi
+                    memory: 500Mi
                   limits:
-                    memory: 350Mi
+                    memory: 1000Mi
                 volumeMounts:
                   - name: grist-data
                     mountPath: /persist
