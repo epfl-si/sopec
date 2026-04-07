@@ -11,3 +11,5 @@ postgres_users:
   - peekaping
   - zipline
   - ctfd
+  - miamtrix
+
