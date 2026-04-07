@@ -1,0 +1,10 @@
+image: quay-its.epfl.ch/svc0176/jdt-manager
+version: 1.0.0
+app: jdt-manager
+secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/jdt-manager/secrets.yml') | from_yaml }}"
+subdomain: jdt
+domain: fsd.epfl.ch
+
+postgres_cluster:
+  name: postgres-cluster
+  host: postgres-cluster-rw

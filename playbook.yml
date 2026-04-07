@@ -95,3 +95,10 @@
     - role: roles/miamtrix
   tags:
     - miamtrix
+  
+- name: jdt-manager
+  hosts: all
+  roles:
+    - role: roles/jdt-manager
+  tags:
+    - jdt-manager
