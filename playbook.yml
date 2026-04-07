@@ -80,3 +80,10 @@
     - role: roles/gotenberg
   tags:
     - gotenberg
+
+- name: jdt-manager
+  hosts: all
+  roles:
+    - role: roles/jdt-manager
+  tags:
+    - jdt-manager
