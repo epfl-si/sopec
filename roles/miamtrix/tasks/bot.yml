@@ -1,0 +1,59 @@
+- name: Create Deployment
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}-bot"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        strategy:
+          type: Recreate
+        selector:
+          matchLabels:
+            app: "{{ app }}"
+            component: bot
+        template:
+          metadata:
+            labels:
+              app: "{{ app }}"
+              component: bot
+          spec:
+            volumes:
+              - name: bot-logs
+                persistentVolumeClaim:
+                  claimName: "{{ app }}-logs"
+            containers:
+              - image: "{{ image }}:{{ version }}"
+                imagePullPolicy: Always
+                name: "{{ app }}"
+                envFrom:
+                  - secretRef:
+                      name: "{{ app }}-secrets"
+                volumeMounts:
+                  - name: bot-logs
+                    mountPath: /logs
+                resources:
+                  requests:
+                    cpu: 10m
+                    memory: 150Mi
+                  limits:
+                    memory: 300Mi
+            imagePullSecrets:
+              - name: svc0176-pull-secret
+
+- name: Create persistent volume for logs
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: "{{ app }}-logs"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        ressources:
+          requests:
+            storage: 50Mi

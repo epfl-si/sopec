@@ -1,0 +1,8 @@
+image: quay-its.epfl.ch/svc0176/miamtrix
+version: 1.7.0
+app: miamtrix
+secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_matrix/miamtrix_secrets.yml') | from_yaml }}"
+
+postgres_cluster:
+  name: postgres-cluster
+  host: postgres-cluster-rw

@@ -12,5 +12,3 @@ postgres_users:
   - zipline
   - ctfd
   - miamtrix
-  - jdt-manager
-
