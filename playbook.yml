@@ -61,6 +61,13 @@
   tags:
   - oslf
 
+- name: Open WebUI (OWUI)
+  hosts: all
+  roles:
+  - role: roles/owui
+  tags:
+  - owui
+
 - name: plane
   hosts: all
   roles:

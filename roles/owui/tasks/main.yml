@@ -1,0 +1,39 @@
+# Open WebUI (OWUI) is an extensible, feature-rich, and user-friendly
+# self-hosted AI platform designed to operate entirely offline.
+# https://docs.openwebui.com/
+---
+- name: Ensure Secrets
+  include_tasks:
+    file: secrets.yml
+    apply:
+      tags:
+        - owui.secrets
+  tags:
+    - owui.secrets
+
+- name: Create Storage
+  include_tasks:
+    file: storage.yml
+    apply:
+      tags:
+        - owui.storage
+  tags:
+    - owui.storage
+
+- name: Ensure PostgreSQL Database
+  include_tasks:
+    file: postgres.yml
+    apply:
+      tags:
+        - owui.postgres
+  tags:
+    - owui.postgres
+
+- name: Deploy Web Application
+  include_tasks:
+    file: web.yml
+    apply:
+      tags:
+        - owui.web
+  tags:
+    - owui.web
