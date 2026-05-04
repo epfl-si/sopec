@@ -5,3 +5,4 @@ subdomain: gatus
 secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/gatus/secrets.yml') | from_yaml }}"
 domain: fsd.epfl.ch
 telegram_secret: "hfudf82jf9jf0wjfd0t4jewq0gfj"
+password: "dhdjdjdjdfkdkfkj"
