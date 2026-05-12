@@ -1,0 +1,16 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: jdt-manager
+  labels:
+    app.kubernetes.io/name: jdt-manager
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  cluster:
+    name: postgres-cluster
+  name: jdt-manager-db
+  owner: jdt-manager-user
+  passwordSecret:
+    name: jdt-manager-db-credentials
