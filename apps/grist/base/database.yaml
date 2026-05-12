@@ -1,0 +1,16 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: grist
+  labels:
+    app.kubernetes.io/name: grist
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  cluster:
+    name: postgres-cluster
+  name: grist-db
+  owner: grist-user
+  passwordSecret:
+    name: grist-db-credentials
