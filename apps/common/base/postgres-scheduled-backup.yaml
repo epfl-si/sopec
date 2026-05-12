@@ -1,0 +1,14 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: cluster-scheduled-backup
+  labels:
+    app.kubernetes.io/name: postgres-cluster
+    app.kubernetes.io/component: backup
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  schedule: "0 0 2 * * *"
+  backupOwnerReference: self
+  cluster:
+    name: postgres-cluster

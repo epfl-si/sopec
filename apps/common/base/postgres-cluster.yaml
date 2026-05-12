@@ -1,0 +1,129 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-cluster
+  labels:
+    app.kubernetes.io/name: postgres-cluster
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.4
+  primaryUpdateStrategy: unsupervised
+  bootstrap:
+    recovery:
+      backup:
+        name: backup-sample  # Utiliser initdb: {} pour un nouveau cluster sans backup
+  backup:
+    barmanObjectStore:
+      data:
+        compression: snappy
+      wal:
+        compression: snappy
+        maxParallel: 8
+      destinationPath: s3://PLACEHOLDER_S3_BUCKET/PLACEHOLDER_ENV-restored  # À remplacer via overlay
+      endpointURL: PLACEHOLDER_S3_HOST                                       # À remplacer via overlay
+      s3Credentials:
+        accessKeyId:
+          name: s3-credentials
+          key: AWS_ACCESS_KEY_ID
+        secretAccessKey:
+          name: s3-credentials
+          key: AWS_SECRET_ACCESS_KEY
+  storage:
+    size: 1Gi
+    storageClass: sopec
+  monitoring:
+    enablePodMonitor: true
+  enableSuperuserAccess: true
+  env:
+    - name: AWS_REQUEST_CHECKSUM_CALCULATION
+      value: WHEN_REQUIRED
+    - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+      value: WHEN_REQUIRED
+  postgresql:
+    parameters:
+      max_connections: "600"
+      max_slot_wal_keep_size: 3GB
+      shared_buffers: 256MB
+  resources:
+    requests:
+      cpu: 100m
+      memory: 600Mi
+    limits:
+      memory: 1Gi
+  managed:
+    roles:
+      - name: hedgedoc-user
+        ensure: present
+        login: true
+        superuser: false
+        passwordSecret:
+          name: hedgedoc-db-credentials
+      - name: grist-user
+        ensure: present
+        login: true
+        superuser: false
+        passwordSecret:
+          name: grist-db-credentials
+      - name: umami-user
+        ensure: present
+        login: true
+        superuser: false
+        passwordSecret:
+          name: umami-db-credentials
+      - name: plane-user
+        ensure: present
+        login: true
+        superuser: false
+        passwordSecret:
+          name: plane-db-credentials
+      - name: n8n-user
+        ensure: present
+        login: true
+        superuser: false
+        passwordSecret:
+          name: n8n-db-credentials
+      - name: authentik-user
+        ensure: present
+        login: true
+        superuser: false
+        passwordSecret:
+          name: authentik-db-credentials
+      - name: kuma-user
+        ensure: present
+        login: true
+        superuser: false
+        passwordSecret:
+          name: kuma-db-credentials
+      - name: peekaping-user
+        ensure: present
+        login: true
+        superuser: false
+        passwordSecret:
+          name: peekaping-db-credentials
+      - name: zipline-user
+        ensure: present
+        login: true
+        superuser: false
+        passwordSecret:
+          name: zipline-db-credentials
+      - name: ctfd-user
+        ensure: present
+        login: true
+        superuser: false
+        passwordSecret:
+          name: ctfd-db-credentials
+      - name: miamtrix-user
+        ensure: present
+        login: true
+        superuser: false
+        passwordSecret:
+          name: miamtrix-db-credentials
+      - name: jdt-manager-user
+        ensure: present
+        login: true
+        superuser: false
+        passwordSecret:
+          name: jdt-manager-db-credentials

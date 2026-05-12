@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: svc0176p-isas-fsd
+
+resources:
+  - ../../base
+
+patches:
+  - target:
+      kind: NfsSubdirProvisioner
+      name: sopec
+    patch: |-
+      - op: replace
+        path: /spec/nfs/server
+        value: PLACEHOLDER_NFS_SERVER_PROD
+      - op: replace
+        path: /spec/nfs/path
+        value: PLACEHOLDER_NFS_PATH_PROD
+  - target:
+      kind: Cluster
+      name: postgres-cluster
+    patch: |-
+      - op: replace
+        path: /spec/backup/barmanObjectStore/destinationPath
+        value: s3://PLACEHOLDER_S3_BUCKET_PROD/prod-restored
+      - op: replace
+        path: /spec/backup/barmanObjectStore/endpointURL
+        value: PLACEHOLDER_S3_HOST_PROD

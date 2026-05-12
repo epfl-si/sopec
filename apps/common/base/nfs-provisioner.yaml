@@ -1,0 +1,22 @@
+apiVersion: nfs.epfl.ch/v1alpha1
+kind: NfsSubdirProvisioner
+metadata:
+  name: sopec
+  labels:
+    app.kubernetes.io/name: nfs-subdir-provisioner
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  nfs:
+    server: PLACEHOLDER_NFS_SERVER  # À remplacer via overlay
+    path: PLACEHOLDER_NFS_PATH       # À remplacer via overlay
+  storageClass:
+    defaultClass: false
+    name: sopec
+  resources:
+    requests:
+      cpu: 10m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
