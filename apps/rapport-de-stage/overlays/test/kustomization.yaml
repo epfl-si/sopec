@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: svc0176t-isas-fsd
+
+resources:
+  - ../../base
+
+patches:
+  - target:
+      kind: Route
+      name: rapport-de-stage
+    patch: |-
+      - op: replace
+        path: /spec/host
+        value: rapport-de-stage-test.fsd.epfl.ch
