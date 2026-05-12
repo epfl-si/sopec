@@ -1,0 +1,33 @@
+- name: create storage for authentik
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: "{{ app }}-data"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: sopec
+
+- name: create redis storage for authentik
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: "{{ app }}-redis-data"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: sopec

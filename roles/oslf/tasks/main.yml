@@ -15,27 +15,27 @@
             port: 80
             targetPort: 3000
 
-- name: Create Route
-  kubernetes.core.k8s:
-    definition:
-      apiVersion: route.openshift.io/v1
-      kind: Route
-      metadata:
-        name: "{{ app }}"
-        namespace: "{{ openshift_namespace }}"
-        labels:
-          app: "{{ app }}"
-          route: public-cf
-      spec:
-        host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
-        to:
-          kind: Service
-          name: "{{ app }}"
-        port:
-          targetPort: "{{ app }}-svc-port"
-        tls:
-          termination: edge
-          insecureEdgeTerminationPolicy: Redirect
+# - name: Create Route
+#   kubernetes.core.k8s:
+#     definition:
+#       apiVersion: route.openshift.io/v1
+#       kind: Route
+#       metadata:
+#         name: "{{ app }}"
+#         namespace: "{{ openshift_namespace }}"
+#         labels:
+#           app: "{{ app }}"
+#           route: public-cf
+#       spec:
+#         host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+#         to:
+#           kind: Service
+#           name: "{{ app }}"
+#         port:
+#           targetPort: "{{ app }}-svc-port"
+#         tls:
+#           termination: edge
+#           insecureEdgeTerminationPolicy: Redirect
 
 - name: Create Secret
   kubernetes.core.k8s:

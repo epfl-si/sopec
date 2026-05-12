@@ -1,0 +1,79 @@
+- name: Create Outpost Deployment
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}-outpost"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 1
+        selector:
+          matchLabels:
+            app: "{{ app }}"
+            component: outpost
+        template:
+          metadata:
+            labels:
+              app: "{{ app }}"
+              component: outpost
+          spec:
+            containers:
+              - image: "quay-its.epfl.ch/svc0176/authentik-proxy:2025.8"
+                imagePullPolicy: Always
+                name: "{{ app }}-outpost"
+                envFrom:
+                  - secretRef:
+                      name: "{{ app }}-secrets"
+                ports:
+                  - containerPort: 9000
+                    name: http
+                  - containerPort: 9443
+                    name: https
+                resources:
+                  requests:
+                    cpu: 10m
+                    memory: 128Mi
+                  limits:
+                    memory: 128Mi
+                readinessProbe:
+                  tcpSocket:
+                    port: 9000
+                  initialDelaySeconds: 5
+                  timeoutSeconds: 3
+                livenessProbe:
+                  tcpSocket:
+                    port: 9000
+                  initialDelaySeconds: 5
+                  timeoutSeconds: 3
+            imagePullSecrets:
+              - name: svc0176-pull-secret
+
+- name: Create Outpost Service
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}-outpost"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        selector:
+          app: "{{ app }}"
+          component: outpost
+        ports:
+          - protocol: TCP
+            port: 9000
+            targetPort: 9000
+            name: http
+          - protocol: TCP
+            port: 9443
+            targetPort: 9443
+            name: https
+        type: ClusterIP

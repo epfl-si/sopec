@@ -37,7 +37,12 @@
         namespace: "{{ openshift_namespace }}"
       spec:
         instances: 3
+        imageName: ghcr.io/cloudnative-pg/postgresql:17.4
         primaryUpdateStrategy: unsupervised
+        bootstrap:
+          recovery:
+            backup:
+              name: backup-sample
         backup:
           barmanObjectStore:
             data:
@@ -45,8 +50,8 @@
             wal:
               compression: snappy
               maxParallel: 8
-            destinationPath: "s3://{{ secrets[openshift_env].s3.name }}/{{ openshift_env }}"
-            endpointURL: "https://{{ secrets[openshift_env].s3.host }}"
+            destinationPath: "s3://{{ secrets[openshift_env].s3.name }}/{{ openshift_env }}-restored"
+            endpointURL: "{{ secrets[openshift_env].s3.host }}"
             s3Credentials:
               accessKeyId:
                 name: s3-credentials
@@ -57,6 +62,7 @@
         storage:
           size: "1Gi"
           storageClass: "sopec"
+
         monitoring:
           enablePodMonitor: true
         enableSuperuserAccess: true

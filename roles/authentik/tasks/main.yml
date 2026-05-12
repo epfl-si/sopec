@@ -1,0 +1,53 @@
+- name: Ensure Secrets
+  include_tasks:
+    file: secrets.yml
+    apply:
+      tags:
+        - authentik.secrets
+  tags:
+    - authentik.secrets
+
+- name: Ensure PostgreSQL Database
+  include_tasks:
+    file: postgres.yml
+    apply:
+      tags:
+        - authentik.postgres
+  tags:
+    - authentik.postgres
+
+- name: Deploy Redis
+  include_tasks:
+    file: redis.yml
+    apply:
+      tags:
+        - authentik.redis
+  tags:
+    - authentik.redis
+
+- name: Create Storage
+  include_tasks:
+    file: storage.yml
+    apply:
+      tags:
+        - authentik.storage
+  tags:
+    - authentik.storage
+
+- name: Deploy Server
+  include_tasks:
+    file: server.yml
+    apply:
+      tags:
+        - authentik.server
+  tags:
+    - authentik.server
+
+- name: Deploy Worker
+  include_tasks:
+    file: worker.yml
+    apply:
+      tags:
+        - authentik.worker
+  tags:
+    - authentik.worker
