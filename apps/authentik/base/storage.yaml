@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: authentik-data
+  labels:
+    app.kubernetes.io/name: authentik
+    app.kubernetes.io/component: media
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: sopec
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: authentik-redis-data
+  labels:
+    app.kubernetes.io/name: authentik
+    app.kubernetes.io/component: redis
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: sopec

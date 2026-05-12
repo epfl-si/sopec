@@ -1,0 +1,16 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: authentik
+  labels:
+    app.kubernetes.io/name: authentik
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  cluster:
+    name: postgres-cluster
+  name: authentik-db
+  owner: authentik-user
+  passwordSecret:
+    name: authentik-db-credentials
