@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: plane-vars
+  labels:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: config
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+data:
+  SENTRY_DSN: ""
+  SENTRY_ENVIRONMENT: ""
+  DEBUG: "0"
+  DOCKERIZED: "1"
+  GUNICORN_WORKERS: "1"
+  MINIO_ENDPOINT_SSL: "0"
+  API_KEY_RATE_LIMIT: 60/minute
+  WEB_URL: https://plane.fsd.epfl.ch
+  CORS_ALLOWED_ORIGINS: http://plane.fsd.epfl.ch,https://plane.fsd.epfl.ch
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: plane-live-vars
+  labels:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: config-live
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+data:
+  API_BASE_URL: http://plane-api.svc0176p-isas-fsd.svc.cluster.local:8000/
+  LIVE_SENTRY_DSN: ""
+  LIVE_SENTRY_ENVIRONMENT: ""
+  LIVE_SENTRY_TRACES_SAMPLE_RATE: ""
+  LIVE_BASE_PATH: /live

@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: plane-space
+  labels:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: space
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: space
+  ports:
+    - name: space
+      port: 3000
+      protocol: TCP
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plane-space
+  labels:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: space
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: plane
+      app.kubernetes.io/component: space
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: plane
+        app.kubernetes.io/component: space
+        app.kubernetes.io/part-of: sopec
+    spec:
+      serviceAccountName: plane-srv-account
+      containers:
+        - name: space
+          image: quay-its.epfl.ch/svc0176/plane-space:stable
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 50m
+              memory: 50Mi
+            limits:
+              cpu: 500m
+              memory: 1000Mi

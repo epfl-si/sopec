@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plane-worker
+  labels:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: plane
+      app.kubernetes.io/component: worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: plane
+        app.kubernetes.io/component: worker
+        app.kubernetes.io/part-of: sopec
+    spec:
+      serviceAccountName: plane-srv-account
+      containers:
+        - name: worker
+          image: quay-its.epfl.ch/svc0176/plane-backend:stable
+          imagePullPolicy: Always
+          command: [./bin/docker-entrypoint-worker.sh]
+          resources:
+            requests:
+              cpu: 50m
+              memory: 50Mi
+            limits:
+              cpu: 500m
+              memory: 1000Mi
+          envFrom:
+            - configMapRef:
+                name: plane-vars
+            - secretRef:
+                name: plane-secrets
+            - secretRef:
+                name: plane-doc-store-secrets
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plane-beat-worker
+  labels:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: beat-worker
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: plane
+      app.kubernetes.io/component: beat-worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: plane
+        app.kubernetes.io/component: beat-worker
+        app.kubernetes.io/part-of: sopec
+    spec:
+      serviceAccountName: plane-srv-account
+      containers:
+        - name: beat-worker
+          image: quay-its.epfl.ch/svc0176/plane-backend:stable
+          imagePullPolicy: Always
+          command: [./bin/docker-entrypoint-beat.sh]
+          resources:
+            requests:
+              cpu: 50m
+              memory: 50Mi
+            limits:
+              cpu: 500m
+              memory: 1000Mi
+          envFrom:
+            - configMapRef:
+                name: plane-vars
+            - secretRef:
+                name: plane-secrets
+            - secretRef:
+                name: plane-doc-store-secrets

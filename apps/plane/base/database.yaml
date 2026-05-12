@@ -1,0 +1,16 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: plane
+  labels:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  cluster:
+    name: postgres-cluster
+  name: plane-db
+  owner: plane-user
+  passwordSecret:
+    name: plane-db-credentials

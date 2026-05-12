@@ -1,0 +1,153 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: plane-web
+  labels:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+    route: public-cf
+spec:
+  host: plane.fsd.epfl.ch
+  path: /
+  to:
+    kind: Service
+    name: plane-web
+  port:
+    targetPort: 3000
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: plane-api
+  labels:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+    route: public-cf
+spec:
+  host: plane.fsd.epfl.ch
+  path: /api
+  to:
+    kind: Service
+    name: plane-api
+  port:
+    targetPort: 8000
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: plane-auth
+  labels:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: auth
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+    route: public-cf
+spec:
+  host: plane.fsd.epfl.ch
+  path: /auth
+  to:
+    kind: Service
+    name: plane-api
+  port:
+    targetPort: 8000
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: plane-live
+  labels:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: live
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+    route: public-cf
+spec:
+  host: plane.fsd.epfl.ch
+  path: /live/
+  to:
+    kind: Service
+    name: plane-live
+  port:
+    targetPort: 3000
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: plane-space
+  labels:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: space
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+    route: public-cf
+spec:
+  host: plane.fsd.epfl.ch
+  path: /spaces
+  to:
+    kind: Service
+    name: plane-space
+  port:
+    targetPort: 3000
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: plane-admin
+  labels:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: admin
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+    route: public-cf
+spec:
+  host: plane.fsd.epfl.ch
+  path: /god-mode
+  to:
+    kind: Service
+    name: plane-admin
+  port:
+    targetPort: 3000
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: plane-minio
+  labels:
+    app.kubernetes.io/name: plane
+    app.kubernetes.io/component: minio
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+    route: public-cf
+spec:
+  host: plane.fsd.epfl.ch
+  path: /uploads
+  to:
+    kind: Service
+    name: plane-minio
+  port:
+    targetPort: 9000
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
