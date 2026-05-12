@@ -1,0 +1,16 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: n8n
+  labels:
+    app.kubernetes.io/name: n8n
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  cluster:
+    name: postgres-cluster
+  name: n8n-db
+  owner: n8n-user
+  passwordSecret:
+    name: n8n-db-credentials

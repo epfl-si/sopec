@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: n8n
+  labels:
+    app.kubernetes.io/name: n8n
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  selector:
+    app.kubernetes.io/name: n8n
+    app.kubernetes.io/component: web
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: n8n
+  labels:
+    app.kubernetes.io/name: n8n
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+    route: public-cf
+spec:
+  host: n8n.fsd.epfl.ch
+  to:
+    kind: Service
+    name: n8n
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: n8n
+  labels:
+    app.kubernetes.io/name: n8n
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+    app.kubernetes.io/version: "1.122.3"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: n8n
+      app.kubernetes.io/component: web
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: n8n
+        app.kubernetes.io/component: web
+        app.kubernetes.io/part-of: sopec
+    spec:
+      imagePullSecrets:
+        - name: svc0176-pull-secret
+      containers:
+        - name: n8n
+          image: quay-its.epfl.ch/svc0176/n8n:1.122.3
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5678
+              name: http
+          envFrom:
+            - secretRef:
+                name: n8n-secrets
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          readinessProbe:
+            tcpSocket:
+              port: 5678
+            initialDelaySeconds: 5
+            timeoutSeconds: 3
+          livenessProbe:
+            tcpSocket:
+              port: 5678
+            initialDelaySeconds: 5
+            timeoutSeconds: 3
+          volumeMounts:
+            - name: data
+              mountPath: /home/node
+      volumes:
+        - name: data
+          emptyDir: {}
