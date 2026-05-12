@@ -1,0 +1,16 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: zipline
+  labels:
+    app.kubernetes.io/name: zipline
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: sopec
+    app.kubernetes.io/managed-by: argocd
+spec:
+  cluster:
+    name: postgres-cluster
+  name: zipline-db
+  owner: zipline-user
+  passwordSecret:
+    name: zipline-db-credentials
