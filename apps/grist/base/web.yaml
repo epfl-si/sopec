@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/name: grist
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 spec:
   selector:
     app.kubernetes.io/name: grist
@@ -25,7 +24,6 @@ metadata:
     app.kubernetes.io/name: grist
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
     route: public-cf
 spec:
   host: grist.fsd.epfl.ch
@@ -46,8 +44,6 @@ metadata:
     app.kubernetes.io/name: grist
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
-    app.kubernetes.io/version: "1.6.1"
 spec:
   replicas: 1
   strategy:

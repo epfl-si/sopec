@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/name: gotenberg
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 spec:
   selector:
     app.kubernetes.io/name: gotenberg
@@ -25,8 +24,6 @@ metadata:
     app.kubernetes.io/name: gotenberg
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
-    app.kubernetes.io/version: "8"
 spec:
   replicas: 1
   strategy:

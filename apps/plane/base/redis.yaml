@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: redis
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 spec:
   clusterIP: None
   selector:
@@ -26,7 +25,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: redis
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 spec:
   accessModes:
     - ReadWriteOnce
@@ -44,8 +42,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: redis
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
-    app.kubernetes.io/version: 7.2.5-alpine
 spec:
   serviceName: plane-redis
   selector:

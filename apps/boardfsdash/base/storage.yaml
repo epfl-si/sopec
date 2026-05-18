@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/name: boardfsdash
     app.kubernetes.io/component: storage
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 spec:
   accessModes:
     - ReadWriteOnce

@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/name: gatus
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 spec:
   selector:
     app.kubernetes.io/name: gatus
@@ -25,7 +24,6 @@ metadata:
     app.kubernetes.io/name: gatus
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
     route: public-cf
 spec:
   host: gatus.fsd.epfl.ch
@@ -46,8 +44,6 @@ metadata:
     app.kubernetes.io/name: gatus
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
-    app.kubernetes.io/version: v5.24.0
 spec:
   replicas: 1
   strategy:

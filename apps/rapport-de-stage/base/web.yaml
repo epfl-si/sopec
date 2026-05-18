@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/name: rapport-de-stage
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 spec:
   selector:
     app.kubernetes.io/name: rapport-de-stage
@@ -25,7 +24,6 @@ metadata:
     app.kubernetes.io/name: rapport-de-stage
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
     route: public-cf
 spec:
   host: rapport-de-stage.fsd.epfl.ch
@@ -46,8 +44,6 @@ metadata:
     app.kubernetes.io/name: rapport-de-stage
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
-    app.kubernetes.io/version: "1.9"
 spec:
   replicas: 1
   strategy:

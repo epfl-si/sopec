@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: worker
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 spec:
   replicas: 1
   selector:
@@ -49,7 +48,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: beat-worker
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 spec:
   replicas: 1
   selector:

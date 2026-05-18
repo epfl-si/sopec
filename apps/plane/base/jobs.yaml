@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: init
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 spec:
   backoffLimit: 6
   completionMode: NonIndexed
@@ -58,7 +57,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: migration
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 spec:
   backoffLimit: 3
   template:

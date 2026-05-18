@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/name: postgres-cluster
     app.kubernetes.io/component: database
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 spec:
   instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:17.4
@@ -14,7 +13,7 @@ spec:
   bootstrap:
     recovery:
       backup:
-        name: backup-sample  # Utiliser initdb: {} pour un nouveau cluster sans backup
+        name: backup-sample # Utiliser initdb: {} pour un nouveau cluster sans backup
   backup:
     barmanObjectStore:
       data:
@@ -22,8 +21,8 @@ spec:
       wal:
         compression: snappy
         maxParallel: 8
-      destinationPath: s3://PLACEHOLDER_S3_BUCKET/PLACEHOLDER_ENV-restored  # À remplacer via overlay
-      endpointURL: PLACEHOLDER_S3_HOST                                       # À remplacer via overlay
+      destinationPath: s3://PLACEHOLDER_S3_BUCKET/PLACEHOLDER_ENV-restored # À remplacer via overlay
+      endpointURL: PLACEHOLDER_S3_HOST # À remplacer via overlay
       s3Credentials:
         accessKeyId:
           name: s3-credentials

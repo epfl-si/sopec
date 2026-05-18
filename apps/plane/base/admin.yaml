@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: admin
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 spec:
   clusterIP: None
   selector:
@@ -26,7 +25,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: admin
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 spec:
   replicas: 1
   selector:

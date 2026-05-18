@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
     route: public-cf
 spec:
   host: plane.fsd.epfl.ch
@@ -28,7 +27,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: api
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
     route: public-cf
 spec:
   host: plane.fsd.epfl.ch
@@ -50,7 +48,7 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: auth
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
+
     route: public-cf
 spec:
   host: plane.fsd.epfl.ch
@@ -72,7 +70,7 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: live
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
+
     route: public-cf
 spec:
   host: plane.fsd.epfl.ch
@@ -94,7 +92,7 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: space
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
+
     route: public-cf
 spec:
   host: plane.fsd.epfl.ch
@@ -116,7 +114,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: admin
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
     route: public-cf
 spec:
   host: plane.fsd.epfl.ch
@@ -138,7 +135,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: minio
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
     route: public-cf
 spec:
   host: plane.fsd.epfl.ch

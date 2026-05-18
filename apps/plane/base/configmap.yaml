@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: config
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 data:
   SENTRY_DSN: ""
   SENTRY_ENVIRONMENT: ""
@@ -26,7 +25,6 @@ metadata:
     app.kubernetes.io/name: plane
     app.kubernetes.io/component: config-live
     app.kubernetes.io/part-of: sopec
-    app.kubernetes.io/managed-by: argocd
 data:
   API_BASE_URL: http://plane-api.svc0176p-isas-fsd.svc.cluster.local:8000/
   LIVE_SENTRY_DSN: ""
