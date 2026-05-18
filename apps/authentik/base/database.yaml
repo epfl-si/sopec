@@ -11,5 +11,3 @@ spec:
     name: postgres-cluster
   name: authentik-db
   owner: authentik-user
-  passwordSecret:
-    name: authentik-db-credentials

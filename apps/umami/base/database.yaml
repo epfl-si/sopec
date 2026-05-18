@@ -11,5 +11,3 @@ spec:
     name: postgres-cluster
   name: umami-db
   owner: umami-user
-  passwordSecret:
-    name: umami-db-credentials

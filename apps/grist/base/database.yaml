@@ -11,5 +11,3 @@ spec:
     name: postgres-cluster
   name: grist-db
   owner: grist-user
-  passwordSecret:
-    name: grist-db-credentials

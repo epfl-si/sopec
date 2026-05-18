@@ -11,5 +11,3 @@ spec:
     name: postgres-cluster
   name: zipline-db
   owner: zipline-user
-  passwordSecret:
-    name: zipline-db-credentials

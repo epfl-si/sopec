@@ -11,5 +11,3 @@ spec:
     name: postgres-cluster
   name: n8n-db
   owner: n8n-user
-  passwordSecret:
-    name: n8n-db-credentials

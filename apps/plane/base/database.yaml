@@ -11,5 +11,3 @@ spec:
     name: postgres-cluster
   name: plane-db
   owner: plane-user
-  passwordSecret:
-    name: plane-db-credentials

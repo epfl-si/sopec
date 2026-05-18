@@ -11,5 +11,3 @@ spec:
     name: postgres-cluster
   name: jdt-manager-db
   owner: jdt-manager-user
-  passwordSecret:
-    name: jdt-manager-db-credentials
