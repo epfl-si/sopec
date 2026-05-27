@@ -1,0 +1,11 @@
+image: quay-its.epfl.ch/svc0176/open-webui
+version: main
+app: owui
+subdomain: owui
+domain: fsd.epfl.ch
+host: "{{ subdomain }}{% if openshift_env == 'test' %}-test{% endif %}.{{ domain }}"
+url: "https://{{ host }}"
+secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/owui/secrets.yml') | from_yaml }}"
+
+postgres_cluster:
+  name: postgres-cluster
