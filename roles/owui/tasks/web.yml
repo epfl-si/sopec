@@ -72,19 +72,19 @@
                 resources:
                   requests:
                     cpu: "{{ '200m' if openshift_env == 'prod' else '100m' }}"
-                    memory: "{{ '1Gi' if openshift_env == 'prod' else '800Mi' }}"
+                    memory: "{{ '1Gi' if openshift_env == 'prod' else '1Gi' }}"
                   limits:
-                    memory: "{{ '1Gi' if openshift_env == 'prod' else '800Mi' }}"
-                # readinessProbe:
-                #   tcpSocket:
-                #     port: 8080
-                #   initialDelaySeconds: 5
-                #   timeoutSeconds: 3
-                # livenessProbe:
-                #   tcpSocket:
-                #     port: 8080
-                #   initialDelaySeconds: 5
-                #   timeoutSeconds: 3
+                    memory: "{{ '1Gi' if openshift_env == 'prod' else '1Gi' }}"
+                readinessProbe:
+                  tcpSocket:
+                    port: 8080
+                  initialDelaySeconds: 10
+                  timeoutSeconds: 3
+                livenessProbe:
+                  tcpSocket:
+                    port: 8080
+                  initialDelaySeconds: 15
+                  timeoutSeconds: 3
                 volumeMounts:
                   - name: "{{ app }}-data"
                     mountPath: /app/backend/data
