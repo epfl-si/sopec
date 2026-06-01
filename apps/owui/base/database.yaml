@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: owui
+  labels:
+    app.kubernetes.io/name: owui
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: sopec
+spec:
+  cluster:
+    name: postgres-cluster
+  name: owui-db
+  owner: owui-user
