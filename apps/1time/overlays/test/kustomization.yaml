@@ -13,7 +13,7 @@ patches:
     patch: |-
       - op: replace
         path: /spec/host
-        value: 1time-test.fsd.epfl.ch
+        value: paste-test.fsd.epfl.ch
   - target:
       kind: Deployment
       name: onetime-web
