@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: Service
+metadata:
+  # Named "backend" to match the hardcoded nginx proxy_pass in the web image
+  name: backend
+  labels:
+    app.kubernetes.io/name: 1time
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: sopec
+spec:
+  selector:
+    app.kubernetes.io/name: 1time
+    app.kubernetes.io/component: backend
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 1time-backend
+  labels:
+    app.kubernetes.io/name: 1time
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: sopec
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: 1time
+      app.kubernetes.io/component: backend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: 1time
+        app.kubernetes.io/component: backend
+        app.kubernetes.io/part-of: sopec
+    spec:
+      imagePullSecrets:
+        - name: svc0176-pull-secret
+      containers:
+        - name: 1time-backend
+          image: quay-its.epfl.ch/svc0176/1time-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: LISTEN_ADDR
+              value: "0.0.0.0:8080"
+            - name: REDISHOST
+              value: "1time-redis:6379"
+            - name: REDISPASS
+              value: ""
+            - name: FILE_STORAGE_DIR
+              value: "/data/files"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 3
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 3
+          volumeMounts:
+            - name: files
+              mountPath: /data/files
+      volumes:
+        - name: files
+          persistentVolumeClaim:
+            claimName: 1time-files

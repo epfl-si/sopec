@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: 1time-redis-data
+  labels:
+    app.kubernetes.io/name: 1time
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/part-of: sopec
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: sopec
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: 1time-files
+  labels:
+    app.kubernetes.io/name: 1time
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/part-of: sopec
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: sopec

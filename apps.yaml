@@ -31,3 +31,5 @@ apps:
     envs: [test, prod]
   - name: zipline
     envs: [test, prod]
+  - name: 1time
+    envs: [test, prod]
