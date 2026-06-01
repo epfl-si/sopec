@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# sopec — EPFL SI SOPEC CLI
+set -euo pipefail
+CLI_DIR="$(cd "$(dirname "$0")/.cli" && pwd)"
+CMD="${1:-}"
+[[ -n "$CMD" ]] && shift || true
+
+case "$CMD" in
+  deploy)  exec python3 "$CLI_DIR/deploy.py"  "$@" ;;
+  dump)    exec python3 "$CLI_DIR/dump.py"    "$@" ;;
+  import)  exec python3 "$CLI_DIR/import.py"  "$@" ;;
+  mirror)  exec python3 "$CLI_DIR/mirror.py"  "$@" ;;
+  secrets) exec python3 "$CLI_DIR/keybase.py" "$@" ;;
+  sso)     exec python3 "$CLI_DIR/sso.py"     "$@" ;;
+  *)
+    cat >&2 <<'EOF'
+Usage: sopec <command> [options]
+
+Commands:
+  deploy   [test|prod] [--dry-run]        Sync ArgoCD applications from apps.yaml
+  secrets  [test|prod] [app...]           Apply K8s secrets from Keybase
+  dump     [--test|--prod] [--debug]      Backup PostgreSQL databases to Keybase
+  import   [--test|--prod] [--debug]      Restore PostgreSQL databases from backup
+  mirror   <image> [target_org]           Mirror Docker image to quay-its.epfl.ch
+  sso      <argocd-server>                Perform ArgoCD SSO login (PKCE)
+EOF
+    exit 1
+    ;;
+esac
