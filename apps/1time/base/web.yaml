@@ -63,6 +63,19 @@ spec:
     spec:
       imagePullSecrets:
         - name: svc0176-pull-secret
+      initContainers:
+        - name: copy-html
+          image: quay-its.epfl.ch/svc0176/1time-web:latest
+          command: ["sh", "-c", "cp -r /usr/share/nginx/html/. /mnt/html/"]
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 128Mi
+          volumeMounts:
+            - name: nginx-html
+              mountPath: /mnt/html
       containers:
         - name: onetime-web
           image: quay-its.epfl.ch/svc0176/1time-web:latest
@@ -91,3 +104,21 @@ spec:
               port: 8080
             initialDelaySeconds: 5
             timeoutSeconds: 3
+          volumeMounts:
+            - name: nginx-html
+              mountPath: /usr/share/nginx/html
+            - name: nginx-conf-d
+              mountPath: /etc/nginx/conf.d
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-run
+              mountPath: /var/run
+      volumes:
+        - name: nginx-html
+          emptyDir: {}
+        - name: nginx-conf-d
+          emptyDir: {}
+        - name: nginx-cache
+          emptyDir: {}
+        - name: nginx-run
+          emptyDir: {}
