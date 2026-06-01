@@ -1,1 +1,4 @@
 ansible-deps-cache
+.token
+.cli/.token
+.cli/__pycache__
