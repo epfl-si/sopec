@@ -7,14 +7,13 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import (
     KEYBASE_ROOT, info, warn, error, set_debug, print_header,
-    env_config, get_token, configure_kubectl, check_cnpg_cluster,
+    env_config, ensure_oc_login, check_cnpg_cluster,
 )
 
 
 def backup(env: str, cluster: str):
     cfg = env_config(env)
-    token = get_token(env, cfg["argocd_server"])
-    configure_kubectl(env, cfg["api_url"], token)
+    ensure_oc_login(cfg["api_url"], cfg["context"])
     primary = check_cnpg_cluster(cfg["namespace"], cluster)
     if not primary:
         sys.exit(1)
