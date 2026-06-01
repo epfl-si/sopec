@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import (
     KEYBASE_ROOT, info, warn, error, set_debug, print_header,
-    env_config, check_and_login, check_cnpg_cluster,
+    env_config, get_token, configure_kubectl, check_cnpg_cluster,
 )
 
 
@@ -32,8 +32,8 @@ def restore(env: str, cluster: str):
         sys.exit(1)
     info(f"Databases to restore: {', '.join(f.stem for f in sql_files)}")
 
-    if not check_and_login(cfg["api_url"], cfg["context"]):
-        sys.exit(1)
+    token = get_token(env, cfg["argocd_server"])
+    configure_kubectl(env, cfg["api_url"], token)
     primary = check_cnpg_cluster(cfg["namespace"], cluster)
     if not primary:
         sys.exit(1)
