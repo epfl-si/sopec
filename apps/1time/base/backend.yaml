@@ -20,7 +20,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: 1time-backend
+  name: onetime-backend
   labels:
     app.kubernetes.io/name: 1time
     app.kubernetes.io/component: backend
@@ -45,7 +45,7 @@ spec:
       imagePullSecrets:
         - name: svc0176-pull-secret
       containers:
-        - name: 1time-backend
+        - name: onetime-backend
           image: quay-its.epfl.ch/svc0176/1time-backend:latest
           imagePullPolicy: Always
           ports:
@@ -55,7 +55,7 @@ spec:
             - name: LISTEN_ADDR
               value: "0.0.0.0:8080"
             - name: REDISHOST
-              value: "1time-redis:6379"
+              value: "onetime-redis:6379"
             - name: REDISPASS
               value: ""
             - name: FILE_STORAGE_DIR
@@ -82,4 +82,4 @@ spec:
       volumes:
         - name: files
           persistentVolumeClaim:
-            claimName: 1time-files
+            claimName: onetime-files

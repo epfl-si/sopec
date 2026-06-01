@@ -9,24 +9,24 @@ resources:
 patches:
   - target:
       kind: Route
-      name: 1time-web
+      name: onetime-web
     patch: |-
       - op: replace
         path: /spec/host
         value: 1time-test.fsd.epfl.ch
   - target:
       kind: Deployment
-      name: 1time-web
+      name: onetime-web
     patch: |-
       apiVersion: apps/v1
       kind: Deployment
       metadata:
-        name: 1time-web
+        name: onetime-web
       spec:
         template:
           spec:
             containers:
-              - name: 1time-web
+              - name: onetime-web
                 env:
                   - name: APP_HOSTNAME
                     value: 1time-test.fsd.epfl.ch

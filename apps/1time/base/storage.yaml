@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: 1time-redis-data
+  name: onetime-redis-data
   labels:
     app.kubernetes.io/name: 1time
     app.kubernetes.io/component: storage
@@ -17,7 +17,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: 1time-files
+  name: onetime-files
   labels:
     app.kubernetes.io/name: 1time
     app.kubernetes.io/component: storage
