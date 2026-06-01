@@ -6,6 +6,8 @@ API_BASE      = "https://api.ocpits"
 API_SUFFIX    = ".xaas.epfl.ch:6443"
 ARGOCD_PREFIX = "openshift-gitops-server-openshift-gitops.apps.ocpits"
 ARGOCD_SUFFIX = "0001.xaas.epfl.ch"
+OC_OAUTH_PREFIX = "oauth-openshift.apps.ocpits"
+OC_OAUTH_SUFFIX = "0001.xaas.epfl.ch"
 NS_BASE       = "svc0176"
 NS_SUFFIX     = "-isas-fsd"
 KEYBASE_ROOT  = "/keybase/team/epfl_sopec/backups"
@@ -38,16 +40,20 @@ def debug(m: str):
 
 
 def env_config(env: str) -> dict:
-    letter = env[0]
+    import getpass
+    letter    = env[0]
     api_url   = f"{API_BASE}{letter}0001{API_SUFFIX}"
     namespace = f"{NS_BASE}{letter}{NS_SUFFIX}"
     argocd    = f"{ARGOCD_PREFIX}{letter}{ARGOCD_SUFFIX}"
-    return {"api_url": api_url, "namespace": namespace, "argocd_server": argocd}
+    api_host  = api_url.replace("https://", "").replace(".", "-")
+    context   = f"{namespace}/{api_host}/{getpass.getuser()}"
+    return {"api_url": api_url, "namespace": namespace, "argocd_server": argocd, "context": context}
 
 
 # ─── Token ─────────────────────────────────────────────────────────────────────
 
 def token_valid(token: str) -> bool:
+    """Check expiry of a JWT (ArgoCD id_token)."""
     try:
         payload = token.split(".")[1]
         payload += "=" * (4 - len(payload) % 4)
@@ -56,47 +62,62 @@ def token_valid(token: str) -> bool:
         return False
 
 
-def load_token(env: str) -> str:
+def _load_tokens() -> dict:
     try:
-        return json.loads(open(TOKEN_FILE).read()).get(env, "")
+        return json.loads(open(TOKEN_FILE).read())
     except Exception:
-        return ""
+        return {}
 
 
-def save_token(env: str, token: str):
-    try:
-        tokens = json.loads(open(TOKEN_FILE).read())
-    except Exception:
-        tokens = {}
-    tokens[env] = token
+def _save_tokens(tokens: dict):
     with open(TOKEN_FILE, "w") as f:
         json.dump(tokens, f, indent=2)
     os.chmod(TOKEN_FILE, 0o600)
 
 
-def get_token(env: str, argocd_server: str) -> str:
-    cached = load_token(env)
-    if cached and token_valid(cached):
-        print(f"{DIM}Using cached token.{NC}", file=sys.stderr)
-        return cached
-    if cached:
-        print(f"{YELLOW}Cached {env} token expired.{NC}", file=sys.stderr)
+def load_token(key: str):
+    return _load_tokens().get(key)
+
+
+def save_token(key: str, value):
+    tokens = _load_tokens()
+    tokens[key] = value
+    _save_tokens(tokens)
+
+
+def _sso_module():
     _cli_dir = os.path.dirname(os.path.abspath(__file__))
     spec = importlib.util.spec_from_file_location("sso", os.path.join(_cli_dir, "sso.py"))
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
-    token = mod.login(argocd_server)
+    return mod
+
+
+def get_token(env: str, argocd_server: str) -> str:
+    """Get ArgoCD JWT — cached in .token under key <env>."""
+    cached = load_token(env)
+    if isinstance(cached, str) and cached and token_valid(cached):
+        print(f"{DIM}Using cached token.{NC}", file=sys.stderr)
+        return cached
+    if cached:
+        print(f"{YELLOW}Cached {env} token expired.{NC}", file=sys.stderr)
+    token = _sso_module().login(argocd_server)
     print(f"{GREEN}✓{NC} SSO login successful.", file=sys.stderr)
     save_token(env, token)
     return token
 
 
-def configure_kubectl(env: str, api_url: str, token: str):
-    name = f"sopec-{env}"
-    subprocess.run(["kubectl", "config", "set-cluster",     name, f"--server={api_url}"], check=True, capture_output=True)
-    subprocess.run(["kubectl", "config", "set-credentials", name, f"--token={token}"],   check=True, capture_output=True)
-    subprocess.run(["kubectl", "config", "set-context",     name, f"--cluster={name}", f"--user={name}"], check=True, capture_output=True)
-    subprocess.run(["kubectl", "config", "use-context",     name], check=True, capture_output=True)
+def ensure_oc_login(api_url: str, context: str):
+    """Switch to the right oc context; run oc login --web if not authenticated."""
+    r = subprocess.run(["oc", "config", "use-context", context], capture_output=True)
+    if r.returncode == 0:
+        r2 = subprocess.run(["oc", "whoami"], capture_output=True, text=True)
+        if r2.returncode == 0:
+            info(f"Connected as {r2.stdout.strip()}")
+            return
+    warn("Not authenticated — launching oc login --web...")
+    subprocess.run(["oc", "login", api_url, "--web"], check=True)
+    subprocess.run(["oc", "config", "use-context", context], check=True)
 
 
 # ─── kubectl helpers ───────────────────────────────────────────────────────────
