@@ -1,0 +1,40 @@
+# Hemmelig.app
+# Share secrets securely with encrypted messages that automatically
+# self-destruct after being read.
+# https://hemmelig.app/
+---
+- name: Ensure configuration
+  include_tasks:
+    file: config.yml
+    apply:
+      tags:
+      - paste.config
+  tags:
+  - paste.config
+
+- name: Create Storage
+  include_tasks:
+    file: storage.yml
+    apply:
+      tags:
+      - paste.storage
+  tags:
+  - paste.storage
+
+- name: Ensure PostgreSQL Database
+  include_tasks:
+    file: postgres.yml
+    apply:
+      tags:
+      - paste.postgres
+  tags:
+  - paste.postgres
+
+- name: Deploy Web Application
+  include_tasks:
+    file: web.yml
+    apply:
+      tags:
+      - paste.web
+  tags:
+  - paste.web

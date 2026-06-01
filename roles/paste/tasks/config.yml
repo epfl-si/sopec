@@ -1,0 +1,61 @@
+---
+- name: Create application ConfigMap
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: "{{ app }}-config"
+        namespace: "{{ openshift_namespace }}"
+      data:
+        # Enable managed mode
+        HEMMELIG_MANAGED: 'true'
+
+        # General
+        HEMMELIG_INSTANCE_NAME: 'EPFL Paste'
+        HEMMELIG_INSTANCE_DESCRIPTION: 'EPFL secure sharing'
+        HEMMELIG_ALLOW_REGISTRATION: 'true'
+        HEMMELIG_DEFAULT_SECRET_EXPIRATION: '24'
+        HEMMELIG_MAX_SECRET_SIZE: '2048'
+
+        # Organization
+        HEMMELIG_REQUIRE_REGISTERED_USER: 'true'
+        HEMMELIG_ALLOWED_EMAIL_DOMAINS: 'epfl.ch'
+        HEMMELIG_REQUIRE_REGISTERED_USER: 'true'        # Only registered users can create and read secrets
+        HEMMELIG_DISABLE_EMAIL_PASSWORD_SIGNUP: 'true'  # Disable email/password registration (social only)
+
+        # Security
+        HEMMELIG_ALLOW_PASSWORD_PROTECTION: 'true'
+        HEMMELIG_ALLOW_IP_RESTRICTION: 'false'
+        HEMMELIG_ENABLE_RATE_LIMITING: 'true'
+        HEMMELIG_RATE_LIMIT_REQUESTS: '50'
+        HEMMELIG_RATE_LIMIT_WINDOW: '60'
+
+        # Metrics
+        HEMMELIG_METRICS_ENABLED: 'true'
+        # See secrets for HEMMELIG_METRICS_SECRET
+
+# https://github.com/HemmeligOrg/Hemmelig.app/blob/v7/docs/env.md
+- name: Create application secret
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ app }}-secrets"
+        namespace: "{{ openshift_namespace }}"
+      type: Opaque
+      stringData:
+        DATABASE_URL: "postgresql://{{ app }}-user:{{ secrets[openshift_env].database.password }}@postgres:5432/{{ app + '-db' }}"
+
+        BETTER_AUTH_URL: "{{ host }}"
+        BETTER_AUTH_SECRET: "{{ secrets[openshift_env].auth.better_auth_secret }}"
+
+        HEMMELIG_AUTH_MICROSOFT_ID: "{{ secrets[openshift_env].auth.client_id }}"         # Microsoft Application (client) ID
+        HEMMELIG_AUTH_MICROSOFT_SECRET: "{{ secrets[openshift_env].auth.client_secret }}" # Microsoft Client Secret
+        HEMMELIG_AUTH_MICROSOFT_TENANT_ID: "{{ secrets[openshift_env].auth.tenant_id }}"  # Azure AD Tenant ID (optional, defaults to "common")
+
+        HEMMELIG_WEBHOOK_SECRET: "{{ secrets[openshift_env].hemmelig.webhook_secret }}"
+        HEMMELIG_METRICS_SECRET: "{{ secrets[openshift_env].hemmelig.metrics_secret }}"

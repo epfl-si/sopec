@@ -68,6 +68,13 @@
   tags:
   - owui
 
+- name: paste
+  hosts: all
+  roles:
+  - role: roles/paste
+  tags:
+  - paste
+
 - name: plane
   hosts: all
   roles:

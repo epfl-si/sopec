@@ -1,0 +1,102 @@
+- name: Create service
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ app }}"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        selector:
+          app: "{{ app }}"
+        ports:
+          - name: "{{ app }}-svc-port"
+            protocol: TCP
+            port: 80
+            targetPort: http
+
+- name: Create Route
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: "{{ app }}"
+        namespace: "{{ openshift_namespace }}"
+        labels:
+          app: "{{ app }}"
+          route: private
+      spec:
+        host: "{{ host }}"
+        to:
+          kind: Service
+          name: "{{ app }}"
+        port:
+          targetPort: "{{ app }}-svc-port"
+        tls:
+          termination: edge
+          insecureEdgeTerminationPolicy: Redirect
+
+# https://github.com/HemmeligOrg/Hemmelig.app/blob/v7/docs/managed.md#kubernetes-example
+- name: Create Deployment
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ app }}"
+        namespace: "{{ openshift_namespace }}"
+      spec:
+        replicas: 1
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 1
+        selector:
+          matchLabels:
+            app: "{{ app }}"
+        template:
+          metadata:
+            labels:
+              app: "{{ app }}"
+          spec:
+            containers:
+            - image: "{{ image }}:{{ version }}"
+              imagePullPolicy: Always
+              name: "{{ app }}"
+              ports:
+              - containerPort: 3000
+                name: http
+              envFrom:
+              - configMapRef:
+                  name: "{{ app }}-config"
+              - secretRef:
+                  name: "{{ app }}-secrets"
+              env:
+              - name: NODE_ENV
+                value: 'production'
+              resources:
+                requests:
+                  cpu: "{{ '200m' if openshift_env == 'prod' else '100m' }}"
+                  memory: "{{ '1Gi' if openshift_env == 'prod' else '1Gi' }}"
+                limits:
+                  memory: "{{ '1Gi' if openshift_env == 'prod' else '1Gi' }}"
+              readinessProbe:
+                tcpSocket:
+                  port: 3000
+                initialDelaySeconds: 10
+                timeoutSeconds: 3
+              livenessProbe:
+                tcpSocket:
+                  port: 3000
+                initialDelaySeconds: 15
+                timeoutSeconds: 3
+              volumeMounts:
+              - name: "{{ app }}-data"
+                mountPath: /app/storage
+            volumes:
+            - name: "{{ app }}-data"
+              persistentVolumeClaim:
+                claimName: "{{ app }}-data"
+            imagePullSecrets:
+            - name: svc0176-pull-secret
