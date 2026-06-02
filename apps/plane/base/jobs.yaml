@@ -20,7 +20,7 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 50Mi
+              memory: 100Mi
             limits:
               memory: 100Mi
           command:
@@ -44,7 +44,7 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 50Mi
+              memory: 1000Mi
             limits:
               cpu: 500m
               memory: 1000Mi
@@ -76,7 +76,7 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 50Mi
+              memory: 1000Mi
             limits:
               memory: 1000Mi
           envFrom:
