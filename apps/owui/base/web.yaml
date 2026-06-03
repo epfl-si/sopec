@@ -75,10 +75,10 @@ spec:
                 name: owui-secrets
           resources:
             requests:
-              cpu: 200m
-              memory: 1Gi
+              cpu: 100m
+              memory: 512Mi
             limits:
-              memory: 1Gi
+              memory: 512Mi
           readinessProbe:
             tcpSocket:
               port: 8080

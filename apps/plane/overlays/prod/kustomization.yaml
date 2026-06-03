@@ -5,3 +5,171 @@ namespace: svc0176p-isas-fsd
 
 resources:
   - ../../base
+
+patches:
+  # Resources : base * 1.5
+  - target:
+      kind: Deployment
+      name: plane-admin
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 75m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 1500Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1500Mi
+  - target:
+      kind: Deployment
+      name: plane-api
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 75m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 1500Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1500Mi
+  - target:
+      kind: Deployment
+      name: plane-live
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 75m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 1500Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1500Mi
+  - target:
+      kind: StatefulSet
+      name: plane-minio
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 75m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 1500Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1500Mi
+  - target:
+      kind: StatefulSet
+      name: plane-rabbitmq
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 75m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 1500Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1500Mi
+  - target:
+      kind: StatefulSet
+      name: plane-redis
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 75m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 1500Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1500Mi
+  - target:
+      kind: Deployment
+      name: plane-space
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 75m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 1500Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1500Mi
+  - target:
+      kind: Deployment
+      name: plane-web
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 75m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 1500Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1500Mi
+  - target:
+      kind: Deployment
+      name: plane-worker
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 75m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 1500Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1500Mi
+  - target:
+      kind: Deployment
+      name: plane-beat-worker
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 75m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 1500Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1500Mi
+  - target:
+      kind: Job
+      name: plane-minio-bucket-1
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/initContainers/0/resources/requests/cpu
+        value: 75m
+      - op: replace
+        path: /spec/template/spec/initContainers/0/resources/requests/memory
+        value: 150Mi
+      - op: replace
+        path: /spec/template/spec/initContainers/0/resources/limits/memory
+        value: 150Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 75m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 1500Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1500Mi
+  - target:
+      kind: Job
+      name: plane-api-migrate-1
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 75m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 1500Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1500Mi

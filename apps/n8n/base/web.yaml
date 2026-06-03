@@ -75,10 +75,10 @@ spec:
                 name: n8n-secrets
           resources:
             requests:
-              cpu: 50m
-              memory: 512Mi
+              cpu: 25m
+              memory: 256Mi
             limits:
-              memory: 512Mi
+              memory: 256Mi
           readinessProbe:
             tcpSocket:
               port: 5678

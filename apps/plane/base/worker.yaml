@@ -27,11 +27,10 @@ spec:
           command: [./bin/docker-entrypoint-worker.sh]
           resources:
             requests:
-              cpu: 50m
-              memory: 1000Mi
+              cpu: 25m
+              memory: 500Mi
             limits:
-              cpu: 500m
-              memory: 1000Mi
+              memory: 500Mi
           envFrom:
             - configMapRef:
                 name: plane-vars
@@ -69,11 +68,10 @@ spec:
           command: [./bin/docker-entrypoint-beat.sh]
           resources:
             requests:
-              cpu: 50m
-              memory: 1000Mi
+              cpu: 25m
+              memory: 500Mi
             limits:
-              cpu: 500m
-              memory: 1000Mi
+              memory: 500Mi
           envFrom:
             - configMapRef:
                 name: plane-vars

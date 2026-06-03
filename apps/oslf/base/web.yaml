@@ -55,10 +55,10 @@ spec:
                 name: oslf-secrets
           resources:
             requests:
-              cpu: 10m
-              memory: 100Mi
+              cpu: 5m
+              memory: 50Mi
             limits:
-              memory: 100Mi
+              memory: 50Mi
           readinessProbe:
             tcpSocket:
               port: 3000

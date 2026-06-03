@@ -35,10 +35,10 @@ spec:
                 name: authentik-secrets
           resources:
             requests:
-              cpu: 10m
-              memory: 512Mi
+              cpu: 5m
+              memory: 256Mi
             limits:
-              memory: 512Mi
+              memory: 256Mi
           readinessProbe:
             exec:
               command: [ak, healthcheck]

@@ -14,10 +14,3 @@ patches:
       - op: replace
         path: /spec/host
         value: owui-test.fsd.epfl.ch
-  - target:
-      kind: Deployment
-      name: owui
-    patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/resources/requests/cpu
-        value: 100m

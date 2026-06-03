@@ -19,10 +19,10 @@ spec:
           image: quay-its.epfl.ch/svc0176/busybox:latest
           resources:
             requests:
-              cpu: 50m
-              memory: 100Mi
+              cpu: 25m
+              memory: 50Mi
             limits:
-              memory: 100Mi
+              memory: 50Mi
           command:
             - sh
             - "-c"
@@ -43,11 +43,10 @@ spec:
                 name: plane-doc-store-secrets
           resources:
             requests:
-              cpu: 50m
-              memory: 1000Mi
+              cpu: 25m
+              memory: 500Mi
             limits:
-              cpu: 500m
-              memory: 1000Mi
+              memory: 500Mi
 ---
 apiVersion: batch/v1
 kind: Job
@@ -75,10 +74,10 @@ spec:
           imagePullPolicy: Always
           resources:
             requests:
-              cpu: 50m
-              memory: 1000Mi
+              cpu: 25m
+              memory: 500Mi
             limits:
-              memory: 1000Mi
+              memory: 500Mi
           envFrom:
             - configMapRef:
                 name: plane-vars

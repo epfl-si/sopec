@@ -69,10 +69,10 @@ spec:
           command: [cp, "-r", /app/., /tmp/umami-app/]
           resources:
             requests:
-              cpu: 50m
-              memory: 128Mi
+              cpu: 25m
+              memory: 256Mi
             limits:
-              memory: 512Mi
+              memory: 256Mi
           volumeMounts:
             - name: app
               mountPath: /tmp/umami-app
@@ -88,10 +88,10 @@ spec:
                 name: umami-secrets
           resources:
             requests:
-              cpu: 50m
-              memory: 128Mi
+              cpu: 25m
+              memory: 256Mi
             limits:
-              memory: 512Mi
+              memory: 256Mi
           readinessProbe:
             tcpSocket:
               port: 3000

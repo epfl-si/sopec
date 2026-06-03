@@ -60,10 +60,10 @@ spec:
               value: /tmp
           resources:
             requests:
-              cpu: 10m
-              memory: 512Mi
+              cpu: 5m
+              memory: 256Mi
             limits:
-              memory: 512Mi
+              memory: 256Mi
           readinessProbe:
             tcpSocket:
               port: 3000

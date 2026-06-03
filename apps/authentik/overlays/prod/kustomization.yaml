@@ -5,3 +5,44 @@ namespace: svc0176p-isas-fsd
 
 resources:
   - ../../base
+
+patches:
+  - target:
+      kind: Deployment
+      name: authentik-redis
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 15m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 192Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 192Mi
+  - target:
+      kind: Deployment
+      name: authentik-server
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 15m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 1536Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1536Mi
+  - target:
+      kind: Deployment
+      name: authentik-worker
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 15m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 768Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 768Mi

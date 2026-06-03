@@ -75,11 +75,10 @@ spec:
                 name: boardfsdash-secrets
           resources:
             requests:
-              cpu: 50m
-              memory: 512Mi
+              cpu: 25m
+              memory: 256Mi
             limits:
-              cpu: 200m
-              memory: 512Mi
+              memory: 256Mi
           readinessProbe:
             tcpSocket:
               port: 3000

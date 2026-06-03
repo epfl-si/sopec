@@ -75,10 +75,10 @@ spec:
                 name: grist-secrets
           resources:
             requests:
-              cpu: 10m
-              memory: 1000Mi
+              cpu: 5m
+              memory: 500Mi
             limits:
-              memory: 1000Mi
+              memory: 500Mi
           readinessProbe:
             tcpSocket:
               port: 8484

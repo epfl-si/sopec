@@ -27,3 +27,12 @@ patches:
       - op: replace
         path: /spec/backup/barmanObjectStore/endpointURL
         value: PLACEHOLDER_S3_HOST_PROD
+      - op: replace
+        path: /spec/resources/requests/cpu
+        value: 150m
+      - op: replace
+        path: /spec/resources/requests/memory
+        value: 1536Mi
+      - op: replace
+        path: /spec/resources/limits/memory
+        value: 1536Mi
