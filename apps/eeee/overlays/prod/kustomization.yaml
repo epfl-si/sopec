@@ -13,10 +13,10 @@ patches:
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/cpu
-        value: 75m
+        value: 5m
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/memory
-        value: 768Mi
+        value: 64Mi
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/memory
-        value: 768Mi
+        value: 64Mi
