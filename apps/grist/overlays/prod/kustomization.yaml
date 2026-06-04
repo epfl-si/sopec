@@ -13,23 +13,23 @@ patches:
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/cpu
-        value: 5m
+        value: 8m
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/memory
-        value: 16Mi
+        value: 96Mi
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/memory
-        value: 16Mi
+        value: 96Mi
   - target:
       kind: Deployment
       name: grist-web
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/cpu
-        value: 2m
+        value: 8m
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/memory
-        value: 512Mi
+        value: 750Mi
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/memory
-        value: 512Mi
+        value: 750Mi

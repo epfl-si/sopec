@@ -29,7 +29,7 @@ patches:
         value: PLACEHOLDER_S3_HOST_PROD
       - op: replace
         path: /spec/resources/requests/cpu
-        value: 15m
+        value: 75m
       - op: replace
         path: /spec/resources/requests/memory
         value: 768Mi

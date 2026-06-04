@@ -13,45 +13,45 @@ patches:
     patch: |-
       - op: replace
         path: /spec/template/spec/initContainers/0/resources/requests/cpu
-        value: 75m
+        value: 8m
       - op: replace
         path: /spec/template/spec/initContainers/0/resources/requests/memory
-        value: 192Mi
+        value: 96Mi
       - op: replace
         path: /spec/template/spec/initContainers/0/resources/limits/memory
-        value: 192Mi
+        value: 96Mi
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/cpu
-        value: 15m
+        value: 38m
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/memory
-        value: 192Mi
+        value: 96Mi
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/memory
-        value: 192Mi
+        value: 96Mi
   - target:
       kind: Deployment
       name: onetime-backend
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/cpu
-        value: 75m
+        value: 38m
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/memory
-        value: 384Mi
+        value: 192Mi
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/memory
-        value: 384Mi
+        value: 192Mi
   - target:
       kind: Deployment
       name: onetime-redis
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/cpu
-        value: 15m
+        value: 8m
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/memory
-        value: 192Mi
+        value: 96Mi
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/memory
-        value: 192Mi
+        value: 96Mi
