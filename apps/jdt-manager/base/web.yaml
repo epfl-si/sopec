@@ -65,7 +65,7 @@ spec:
         - name: svc0176-pull-secret
       containers:
         - name: jdt-manager
-          image: quay-its.epfl.ch/svc0176/jdt-manager:2.1.0
+          image: quay-its.epfl.ch/svc0176/jdt-manager:2.2.1
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
