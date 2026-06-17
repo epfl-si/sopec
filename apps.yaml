@@ -15,6 +15,8 @@ apps:
     envs: [test, prod]
   - name: jdt-manager
     envs: [test, prod]
+  - name: miamtrix
+    envs: [test, prod]
   - name: n8n
     envs: [test, prod]
   - name: oslf
