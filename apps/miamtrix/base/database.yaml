@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: miamtrix
+  labels:
+    app.kubernetes.io/name: miamtrix
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: sopec
+spec:
+  cluster:
+    name: postgres-cluster
+  name: miamtrix-db
+  owner: miamtrix-user
