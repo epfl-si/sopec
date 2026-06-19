@@ -16,7 +16,7 @@ patches:
         value: 38m
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/memory
-        value: 300Mi
+        value: 500Mi
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/memory
-        value: 300Mi
+        value: 500Mi
