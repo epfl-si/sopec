@@ -8,12 +8,8 @@ metadata:
     app.kubernetes.io/part-of: sopec
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:17.4
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.5
   primaryUpdateStrategy: unsupervised
-  bootstrap:
-    recovery:
-      backup:
-        name: backup-sample # Utiliser initdb: {} pour un nouveau cluster sans backup
   backup:
     barmanObjectStore:
       data:
@@ -21,8 +17,8 @@ spec:
       wal:
         compression: snappy
         maxParallel: 8
-      destinationPath: s3://PLACEHOLDER_S3_BUCKET/PLACEHOLDER_ENV-restored # À remplacer via overlay
-      endpointURL: PLACEHOLDER_S3_HOST # À remplacer via overlay
+      destinationPath: s3://PLACEHOLDER_S3_BUCKET/PLACEHOLDER_ENV
+      endpointURL: PLACEHOLDER_S3_HOST
       s3Credentials:
         accessKeyId:
           name: s3-credentials
