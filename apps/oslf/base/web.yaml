@@ -69,3 +69,23 @@ spec:
               port: 3000
             initialDelaySeconds: 5
             timeoutSeconds: 3
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: oslf
+  labels:
+    app.kubernetes.io/name: oslf
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: sopec
+    route: public-cf
+spec:
+  host: oslf.fsd.epfl.ch
+  to:
+    kind: Service
+    name: oslf
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
