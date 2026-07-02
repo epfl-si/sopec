@@ -23,10 +23,10 @@ patches:
     patch: |-
       - op: replace
         path: /spec/backup/barmanObjectStore/destinationPath
-        value: s3://PLACEHOLDER_S3_BUCKET_PROD/prod-restored
+        value: s3://svc0176-8cddbcda286938ca166635b3af281c01/prod
       - op: replace
         path: /spec/backup/barmanObjectStore/endpointURL
-        value: PLACEHOLDER_S3_HOST_PROD
+        value: https://s3.epfl.ch
       - op: replace
         path: /spec/resources/requests/cpu
         value: 75m
