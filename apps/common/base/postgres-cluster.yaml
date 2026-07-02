@@ -50,75 +50,99 @@ spec:
       memory: 512Mi
   managed:
     roles:
-      - name: hedgedoc-user
+      - connectionLimit: -1
         ensure: present
+        inherit: true
         login: true
-        superuser: false
+        name: hedgedoc-user
         passwordSecret:
           name: hedgedoc-db-credentials
-      - name: grist-user
-        ensure: present
-        login: true
         superuser: false
+      - connectionLimit: -1
+        ensure: present
+        inherit: true
+        login: true
+        name: grist-user
         passwordSecret:
           name: grist-db-credentials
-      - name: umami-user
-        ensure: present
-        login: true
         superuser: false
+      - connectionLimit: -1
+        ensure: present
+        inherit: true
+        login: true
+        name: umami-user
         passwordSecret:
           name: umami-db-credentials
-      - name: plane-user
-        ensure: present
-        login: true
         superuser: false
+      - connectionLimit: -1
+        ensure: present
+        inherit: true
+        login: true
+        name: plane-user
         passwordSecret:
           name: plane-db-credentials
-      - name: n8n-user
-        ensure: present
-        login: true
         superuser: false
+      - connectionLimit: -1
+        ensure: present
+        inherit: true
+        login: true
+        name: n8n-user
         passwordSecret:
           name: n8n-db-credentials
-      - name: authentik-user
-        ensure: present
-        login: true
         superuser: false
+      - connectionLimit: -1
+        ensure: present
+        inherit: true
+        login: true
+        name: authentik-user
         passwordSecret:
           name: authentik-db-credentials
-      - name: kuma-user
-        ensure: present
-        login: true
         superuser: false
+      - connectionLimit: -1
+        ensure: present
+        inherit: true
+        login: true
+        name: kuma-user
         passwordSecret:
           name: kuma-db-credentials
-      - name: peekaping-user
-        ensure: present
-        login: true
         superuser: false
+      - connectionLimit: -1
+        ensure: present
+        inherit: true
+        login: true
+        name: peekaping-user
         passwordSecret:
           name: peekaping-db-credentials
-      - name: zipline-user
-        ensure: present
-        login: true
         superuser: false
+      - connectionLimit: -1
+        ensure: present
+        inherit: true
+        login: true
+        name: zipline-user
         passwordSecret:
           name: zipline-db-credentials
-      - name: ctfd-user
-        ensure: present
-        login: true
         superuser: false
+      - connectionLimit: -1
+        ensure: present
+        inherit: true
+        login: true
+        name: ctfd-user
         passwordSecret:
           name: ctfd-db-credentials
-      - name: miamtrix-user
-        ensure: present
-        login: true
         superuser: false
+      - connectionLimit: -1
+        ensure: present
+        inherit: true
+        login: true
+        name: miamtrix-user
         passwordSecret:
           name: miamtrix-db-credentials
-      - name: jdt-manager-user
-        ensure: present
-        login: true
         superuser: false
+      - connectionLimit: -1
+        ensure: present
+        inherit: true
+        login: true
+        name: jdt-manager-user
         passwordSecret:
           name: jdt-manager-db-credentials
+        superuser: false
