@@ -44,7 +44,7 @@ spec:
             claimName: miamtrix-logs
       containers:
         - name: miamtrix
-          image: quay-its.epfl.ch/svc0176/miamtrix:1.7.0
+          image: quay-its.epfl.ch/svc0176/miamtrix:1.9.0
           imagePullPolicy: Always
           envFrom:
             - secretRef:
