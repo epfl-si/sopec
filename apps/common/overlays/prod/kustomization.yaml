@@ -36,3 +36,6 @@ patches:
       - op: replace
         path: /spec/resources/limits/memory
         value: 768Mi
+      - op: add
+        path: /spec/resources/limits/cpu
+        value: "2"
