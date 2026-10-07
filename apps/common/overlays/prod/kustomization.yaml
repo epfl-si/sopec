@@ -38,7 +38,7 @@ patches:
         value: 768Mi
       - op: add
         path: /spec/resources/limits/cpu
-        value: "2"
+        value: "4"
       - op: add
         path: /spec/probes
         value:
