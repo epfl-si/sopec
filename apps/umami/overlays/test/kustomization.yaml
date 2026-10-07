@@ -9,7 +9,6 @@ resources:
 patches:
   - target:
       kind: Route
-      name: umami
     patch: |-
       - op: replace
         path: /spec/host
