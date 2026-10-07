@@ -39,3 +39,18 @@ patches:
       - op: add
         path: /spec/resources/limits/cpu
         value: "2"
+      - op: add
+        path: /spec/probes
+        value:
+          liveness:
+            timeoutSeconds: 10
+            periodSeconds: 20
+            failureThreshold: 10
+            isolationCheck:
+              enabled: true
+              connectionTimeout: 5000
+              requestTimeout: 5000
+          readiness:
+            timeoutSeconds: 10
+            periodSeconds: 10
+            failureThreshold: 6
