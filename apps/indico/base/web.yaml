@@ -128,5 +128,13 @@ spec:
                 path: css/10-epfl-header.css
               - key: 20-epfl-type.css
                 path: css/20-epfl-type.css
+              - key: 30-epfl-cookie-consent.css
+                path: css/30-epfl-cookie-consent.css
+              - key: 00-epfl-cookie-consent.js
+                path: js/00-epfl-cookie-consent.js
               - key: epfl-logo.svg
                 path: files/epfl-logo.svg
+              - key: favicon-32.png
+                path: files/favicon-32.png
+              - key: epfl-footer.html
+                path: templates/~footer.html

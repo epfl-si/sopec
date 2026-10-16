@@ -7,6 +7,21 @@ metadata:
     app.kubernetes.io/component: theme
     app.kubernetes.io/part-of: sopec
 data:
+  epfl-footer.html: |
+    {# EPFL theme for Indico -- Brand Architecture rule (EPFL Brand
+       Guidelines, go.epfl.ch/identity): unit references must be separated
+       from the EPFL logo and marked with a red square smaller than the
+       logo. Pattern taken verbatim from Indico's own documented example
+       (docs/source/config/settings.rst, CUSTOMIZATION_DIR), which does
+       the same thing for CERN. #}
+    {% extends '~footer.html' %}
+
+    {% block footer_logo %}
+        <a href="https://go.epfl.ch/fsd" class="footer-logo epfl-unit-label">
+            <span class="epfl-unit-square" aria-hidden="true"></span>
+            SOPEC -- ISAS-FSD
+        </a>
+    {% endblock %}
   00-epfl-colors.css: |
     /* EPFL theme for Indico -- color tokens.
        Palette source: https://github.com/epfl-si/elements
@@ -149,6 +164,32 @@ data:
     textarea {
       border-radius: 2px;
     }
+
+    /* Brand Architecture rule (EPFL Brand Guidelines, go.epfl.ch/identity):
+       "Organizational unit references must always be separated from the
+       EPFL logo [...] accompanied by the red square and must be smaller
+       than the logo." Rendered in the footer via ~footer.html below. */
+    .epfl-unit-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4em;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--epfl-black);
+      text-decoration: none;
+    }
+
+    .epfl-unit-label:hover {
+      color: var(--epfl-red);
+    }
+
+    .epfl-unit-square {
+      display: inline-block;
+      width: 0.6em;
+      height: 0.6em;
+      flex: 0 0 auto;
+      background: var(--epfl-red);
+    }
   20-epfl-type.css: |
     /* EPFL theme for Indico -- typography.
        Font hotlinked from EPFL's own styleguide reference site -- the
@@ -189,5 +230,131 @@ data:
       color: var(--epfl-red);
       text-decoration-color: var(--epfl-red);
     }
+  30-epfl-cookie-consent.css: |
+    /* EPFL theme for Indico -- cookie consent banner.
+       Colors match EPFL's real banner config (assets/components/organisms/
+       cookie-consent/cookie-consent.js in epfl-si/elements):
+       popup rgba(69,69,69,.96), button #b51f1f. */
+
+    .epfl-cookie-consent {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10000;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1rem;
+      background: rgba(69, 69, 69, 0.96);
+      color: #fff;
+      font-size: 0.875rem;
+      font-family: 'SuisseIntl', Arial, sans-serif;
+    }
+
+    .epfl-cookie-consent-message {
+      flex: 1 1 auto;
+      margin: 0;
+    }
+
+    .epfl-cookie-consent-message a {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .epfl-cookie-consent-dismiss {
+      flex: 0 0 auto;
+      background: var(--epfl-red-dark);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+
+    .epfl-cookie-consent-dismiss:hover {
+      background: var(--epfl-red);
+    }
+  00-epfl-cookie-consent.js: |
+    /* EPFL theme for Indico -- cookie consent banner.
+       Wording/links/cookie name match EPFL's real banner config
+       (assets/components/organisms/cookie-consent/cookie-consent.js
+       in epfl-si/elements), reimplemented in plain JS so it does not
+       depend on jQuery or the (commercial-CDN-hosted) cookieconsent
+       library being present on the page. */
+    (function () {
+      'use strict';
+
+      var COOKIE_NAME = 'petitpois';
+
+      var MESSAGES = {
+        en: 'When you access EPFL websites, we may set cookies on your devices and ' +
+          'process personal data about you in accordance with our ' +
+          '<a href="https://go.epfl.ch/privacy-policy" target="_blank" rel="noopener">privacy policy</a>. ' +
+          'You can block cookies by using your browser settings.',
+        fr: "Lorsque vous accédez aux sites web de l'EPFL, nous pouvons installer des cookies " +
+          'sur vos appareils et traiter des données personnelles vous concernant conformément ' +
+          'à notre <a href="https://go.epfl.ch/protection-des-donnees" target="_blank" rel="noopener">' +
+          "politique de confidentialité</a>. Vous pouvez bloquer les cookies à l'aide des " +
+          'paramètres de votre navigateur.',
+        de: 'Wenn Sie auf die Websites der EPFL zugreifen, können wir in Übereinstimmung mit ' +
+          'unserer <a href="https://go.epfl.ch/privacy-policy" target="_blank" rel="noopener">' +
+          'Datenschutzerklärung</a> Cookies auf Ihren Geräten speichern und Personendaten ' +
+          'bearbeiten. Über die Einstellungen in Ihrem Browser können Sie Cookies blockieren.'
+      };
+
+      function getCookie(name) {
+        var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
+      }
+
+      function setCookie(name, value, days) {
+        var expires = new Date(Date.now() + days * 864e5).toUTCString();
+        document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/; SameSite=Lax';
+      }
+
+      if (getCookie(COOKIE_NAME)) {
+        return;
+      }
+
+      var lang = (document.documentElement.lang || 'en').slice(0, 2).toLowerCase();
+      if (!MESSAGES[lang]) {
+        lang = 'en';
+      }
+
+      function mount() {
+        var banner = document.createElement('div');
+        banner.className = 'epfl-cookie-consent';
+        banner.setAttribute('role', 'region');
+        banner.setAttribute('aria-label', 'Cookie consent');
+
+        var message = document.createElement('p');
+        message.className = 'epfl-cookie-consent-message';
+        message.innerHTML = MESSAGES[lang];
+
+        var dismiss = document.createElement('button');
+        dismiss.type = 'button';
+        dismiss.className = 'epfl-cookie-consent-dismiss';
+        dismiss.textContent = 'OK';
+        dismiss.addEventListener('click', function () {
+          setCookie(COOKIE_NAME, '1', 365);
+          banner.remove();
+        });
+
+        banner.appendChild(message);
+        banner.appendChild(dismiss);
+        document.body.appendChild(banner);
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', mount);
+      } else {
+        mount();
+      }
+    })();
   epfl-logo.svg: |
     <svg id="logo_epfl_2019" data-name="logo epfl 2019" xmlns="http://www.w3.org/2000/svg" width="182.4" height="53" viewBox="0 0 182.4 53"><defs><style>.cls-1{fill:red;}</style></defs><title>epfl-logo-new</title><polygon class="cls-1" points="0 21.6 11.43 21.6 11.43 9.8 38.34 9.8 38.34 0 0 0 0 21.6"/><polygon class="cls-1" points="0 53 38.34 53 38.34 43.2 11.43 43.2 11.43 31.4 0 31.4 0 53"/><rect class="cls-1" x="11.43" y="21.6" width="24.61" height="9.8"/><path class="cls-1" d="M86,4.87a16.12,16.12,0,0,0-5.68-3.53A23.76,23.76,0,0,0,71.82,0H48.14V53H59.57V31.4H71.82a23.76,23.76,0,0,0,8.46-1.34A16.12,16.12,0,0,0,86,26.53a13.43,13.43,0,0,0,3.19-5,17.38,17.38,0,0,0,0-11.62A13.52,13.52,0,0,0,86,4.87ZM78,18.73a5.7,5.7,0,0,1-2.26,1.8,11.33,11.33,0,0,1-3.27.85,32,32,0,0,1-3.86.22H59.57V9.8h9.05a32,32,0,0,1,3.86.22,11,11,0,0,1,3.27.86A5.59,5.59,0,0,1,78,12.67a5,5,0,0,1,.86,3A5,5,0,0,1,78,18.73Z"/><polygon class="cls-1" points="155.47 43.2 155.47 0 144.04 0 144.04 53 182.38 53 182.38 43.2 155.47 43.2"/><polygon class="cls-1" points="97.42 21.6 108.85 21.6 108.85 9.8 135.76 9.8 135.76 0 97.42 0 97.42 21.6"/><rect class="cls-1" x="97.42" y="31.4" width="11.43" height="21.6"/><rect class="cls-1" x="108.85" y="21.6" width="24.61" height="9.8"/></svg>
+binaryData:
+  favicon-32.png: iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAApVBMVEX/////AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD///8peGh5AAAANXRSTlMAFrBoH6imhWNHIKmIUDCejdzETPhJCAI2CZXqQ7j7bsBIGtBUD10uDVFgOThAHhvYgCgvVyvFNEkAAAABYktHRACIBR1IAAAACXBIWXMAAAG0AAABtAFMIk34AAAAB3RJTUUH4wMMDSMwwdrSegAAAJVJREFUOMvtkLkSgkAQBRcWUNd1REVERfEW1wuP9/+/5khgFZsZaUAHU11TXROMEDV/heMy0vP9oOGU3my5lUChrXWH0A17fYVA64FEJfCiYRyPCMl4MvWilN0KhJgBfAGYZ0IsgKUVrNYboi1ht8/ZD0S5FSiExhwJp9LPPCWMMZdPcC2Y2714lJ7wfL436a+/W/MlL6e1Dh9zycM2AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE5LTAzLTEyVDEzOjM1OjQ4KzAxOjAwJ1VygwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOS0wMy0xMlQxMzozNTo0OCswMTowMFYIyj8AAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAV3pUWHRSYXcgcHJvZmlsZSB0eXBlIGlwdGMAAHic4/IMCHFWKCjKT8vMSeVSAAMjCy5jCxMjE0uTFAMTIESANMNkAyOzVCDL2NTIxMzEHMQHy4BIoEouAOoXEXTyQjWVAAAAAElFTkSuQmCC
