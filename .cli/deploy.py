@@ -41,10 +41,9 @@ def get_argocd_token(env: str, server: str) -> str:
 # ─── ArgoCD API ────────────────────────────────────────────────────────────────
 
 def _api(base: str, path: str, token: str, method: str = "GET", body=None) -> tuple[int, dict]:
-    headers = {"Authorization": f"Bearer {token}"}
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
     data = None
     if body:
-        headers["Content-Type"] = "application/json"
         data = json.dumps(body).encode()
     req = urllib.request.Request(f"{base}{path}", data=data, headers=headers, method=method)
     try:
