@@ -195,19 +195,42 @@ data:
       margin: 12px 24px;
     }
 
+    /* Indico's #global-menu rule (dist/css/main.*.css) hardcodes
+       background: var(--surface-inverse-color) directly on the element
+       (not just via --menu-background-color), so the var overrides
+       above aren't enough on their own -- the real EPFL top nav
+       (epfl-si/elements, header.scss) is a white bar with bold black
+       links and a small red underline/dot on hover, not a dark bar
+       with pill buttons, so that's what we reproduce here. */
     #global-menu {
-      --menu-background-color: var(--epfl-white);
+      background: var(--epfl-white);
+      border-bottom: 1px solid var(--epfl-gray-200);
+      --menu-background-color: transparent;
       --menu-text-color: var(--epfl-black);
       --menu-text-hover-color: var(--epfl-red);
-      --menu-background-hover-color: var(--epfl-white);
+      --menu-background-hover-color: var(--epfl-gray-100);
     }
 
-    #global-menu menu li {
-      border-bottom: 3px solid transparent;
+    #global-menu > menu > li > :is(a, button) {
+      font-weight: 700;
+      position: relative;
     }
 
-    #global-menu menu li:hover {
-      border-bottom: 3px solid var(--epfl-red);
+    #global-menu > menu > li > :is(a, button)::after {
+      content: '';
+      position: absolute;
+      left: 1em;
+      bottom: 0.4em;
+      width: 7px;
+      height: 6px;
+      background: var(--epfl-red);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    #global-menu > menu > li > :is(a, button):hover::after,
+    #global-menu > menu > li > :is(a, button).open::after {
+      opacity: 1;
     }
 
     /* The EPFL styleguide uses near-square corners ($border-radius: 2px) */
