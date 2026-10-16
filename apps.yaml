@@ -25,8 +25,6 @@ apps:
     envs: [test, prod]
   - name: rapport-de-stage
     envs: [test, prod]
-  - name: umami
-    envs: [test, prod]
   - name: uptime-kuma
     envs: [test, prod]
   - name: owui

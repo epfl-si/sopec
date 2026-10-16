@@ -70,14 +70,6 @@ spec:
         ensure: present
         inherit: true
         login: true
-        name: umami-user
-        passwordSecret:
-          name: umami-db-credentials
-        superuser: false
-      - connectionLimit: -1
-        ensure: present
-        inherit: true
-        login: true
         name: plane-user
         passwordSecret:
           name: plane-db-credentials

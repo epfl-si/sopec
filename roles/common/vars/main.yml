@@ -3,7 +3,6 @@ secrets: "{{ lookup('pipe', 'keybase fs read /keybase/team/epfl_sopec/common/sec
 postgres_users:
   - hedgedoc
   - grist
-  - umami
   - plane
   - n8n
   - authentik
