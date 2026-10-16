@@ -128,6 +128,59 @@ data:
     span.badge {
       background: var(--epfl-canard);
     }
+  02-epfl-conference-theme.css: |
+    /* EPFL theme for Indico -- conference/meeting event pages.
+       These pages (dist/css/conferences.*.css) use a *separate* set of
+       CSS custom properties from the rest of the app, defined on :root
+       (not body), normally meant to be customised per-event from the
+       event's own Layout settings. This file just changes the *default*
+       so unthemed events still look EPFL-branded; an organiser can still
+       override it for their own event. Verified live against a running
+       instance (view-source + computed styles), 2026-10-16. */
+    :root {
+      --conf-theme-header-bg: var(--epfl-red);
+      --conf-theme-header-border-bottom: var(--epfl-red-dark);
+      --conf-theme-header-text: var(--epfl-white);
+
+      --conf-theme-subtitle-bg: #fff5f5;
+      --conf-theme-subtitle-border: #f0d5d5;
+      --conf-theme-subtitle-text: var(--epfl-black);
+
+      --conf-theme-menu-bg: var(--epfl-gray-100);
+      --conf-theme-menu-border: var(--epfl-gray-200);
+      --conf-theme-menu-link: var(--epfl-black);
+      --conf-theme-menu-selected: var(--epfl-red);
+      --conf-theme-menu-selected-bg: var(--epfl-gray-100);
+      --conf-theme-menu-selected-border: var(--epfl-gray-200);
+      --conf-theme-hover-bg: var(--epfl-gray-100);
+
+      --conf-theme-support-bg: var(--epfl-gray-100);
+      --conf-theme-support-border: var(--epfl-gray-200);
+      --conf-theme-support-header-bg: var(--epfl-red);
+      --conf-theme-support-text: var(--epfl-gray-500);
+
+      --conf-theme-announcement-bg: #fff5f5;
+      --conf-theme-announcement-border: #f0d5d5;
+      --conf-theme-announcement-text: var(--epfl-black);
+    }
+
+    /* Indico hardcodes these two instead of using a CSS variable
+       (verified: dist/css/main.*.css has `.page-header-dark{background:
+       #424242}` and `.category-title{...color:#cb6d04}` as plain hex). */
+    .page-header-dark {
+      background: var(--epfl-black);
+    }
+
+    .page-title,
+    .category-title,
+    .banner .title,
+    .conference-page header h2,
+    .conference-page section .header-row h2,
+    .conference-page section .header-row h3,
+    .conference-page h3,
+    .balloon-qtip .title-container .title {
+      color: var(--epfl-red);
+    }
   10-epfl-header.css: |
     /* EPFL theme for Indico -- header & navigation.
        Selectors verified against a real production Indico customization:

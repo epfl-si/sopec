@@ -1,4 +1,52 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: indico-uwsgi-config
+  labels:
+    app.kubernetes.io/name: indico
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: sopec
+data:
+  uwsgi.ini: |
+    [uwsgi]
+    processes = 4
+    enable-threads = true
+    http-socket = 0.0.0.0:59999
+    protocol = http
+
+    master = true
+    auto-procname = true
+    procname-prefix-spaced = indico
+    disable-logging = true
+
+    single-interpreter = true
+
+    touch-reload = /opt/indico/indico.wsgi
+    wsgi-file = /opt/indico/indico.wsgi
+    virtualenv = /opt/indico/.venv
+
+    ignore-sigpipe = true
+    ignore-write-errors = true
+    disable-write-exception = true
+    die-on-term = true
+
+    vacuum = true
+    memory-report = true
+    max-requests = 2500
+    harakiri = 900
+    harakiri-verbose = true
+    reload-on-rss = 2048
+    evil-reload-on-rss = 8192
+
+    offload-threads = 4
+
+    # Default (4096) is too small for the OIDC/OAuth login callback: the
+    # authorization code plus Cloudflare cookies push the request past it,
+    # and uwsgi silently drops the request ("invalid HTTP request size"),
+    # which surfaces upstream as a 502.
+    buffer-size = 65536
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: indico-web
@@ -99,6 +147,10 @@ spec:
               mountPath: /opt/indico/etc/indico.conf
               subPath: indico.conf
               readOnly: true
+            - name: uwsgi-config
+              mountPath: /etc/uwsgi.ini
+              subPath: uwsgi.ini
+              readOnly: true
             - name: tmp
               mountPath: /opt/indico/tmp
             - name: logs
@@ -131,6 +183,9 @@ spec:
         - name: config
           secret:
             secretName: indico-config
+        - name: uwsgi-config
+          configMap:
+            name: indico-uwsgi-config
         - name: tmp
           emptyDir: {}
         - name: logs
@@ -145,6 +200,8 @@ spec:
                 path: css/00-epfl-colors.css
               - key: 01-epfl-buttons.css
                 path: css/01-epfl-buttons.css
+              - key: 02-epfl-conference-theme.css
+                path: css/02-epfl-conference-theme.css
               - key: 10-epfl-header.css
                 path: css/10-epfl-header.css
               - key: 20-epfl-type.css
@@ -158,4 +215,4 @@ spec:
               - key: favicon-32.png
                 path: files/favicon-32.png
               - key: epfl-footer.html
-                path: templates/~footer.html
+                path: templates/footer.html

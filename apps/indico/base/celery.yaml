@@ -94,6 +94,8 @@ spec:
                 path: css/00-epfl-colors.css
               - key: 01-epfl-buttons.css
                 path: css/01-epfl-buttons.css
+              - key: 02-epfl-conference-theme.css
+                path: css/02-epfl-conference-theme.css
               - key: 10-epfl-header.css
                 path: css/10-epfl-header.css
               - key: 20-epfl-type.css
@@ -107,7 +109,7 @@ spec:
               - key: favicon-32.png
                 path: files/favicon-32.png
               - key: epfl-footer.html
-                path: templates/~footer.html
+                path: templates/footer.html
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -203,6 +205,8 @@ spec:
                 path: css/00-epfl-colors.css
               - key: 01-epfl-buttons.css
                 path: css/01-epfl-buttons.css
+              - key: 02-epfl-conference-theme.css
+                path: css/02-epfl-conference-theme.css
               - key: 10-epfl-header.css
                 path: css/10-epfl-header.css
               - key: 20-epfl-type.css
@@ -216,4 +220,4 @@ spec:
               - key: favicon-32.png
                 path: files/favicon-32.png
               - key: epfl-footer.html
-                path: templates/~footer.html
+                path: templates/footer.html
