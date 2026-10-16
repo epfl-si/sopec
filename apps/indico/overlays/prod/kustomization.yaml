@@ -13,39 +13,26 @@ patches:
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/cpu
-        value: 50m
+        value: 20m
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/memory
-        value: 1000Mi
+        value: 600Mi
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/memory
-        value: 1500Mi
+        value: 600Mi
   - target:
       kind: Deployment
       name: indico-celery
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/cpu
-        value: 25m
+        value: 15m
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/memory
-        value: 400Mi
+        value: 300Mi
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/memory
-        value: 750Mi
-  - target:
-      kind: Deployment
-      name: indico-celery-beat
-    patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/resources/requests/cpu
-        value: 10m
-      - op: replace
-        path: /spec/template/spec/containers/0/resources/requests/memory
-        value: 128Mi
-      - op: replace
-        path: /spec/template/spec/containers/0/resources/limits/memory
-        value: 256Mi
+        value: 300Mi
   - target:
       kind: Deployment
       name: indico-redis

@@ -86,10 +86,10 @@ spec:
               mountPath: /opt/indico/cache
           resources:
             requests:
-              cpu: 20m
-              memory: 500Mi
+              cpu: 10m
+              memory: 400Mi
             limits:
-              memory: 1000Mi
+              memory: 400Mi
           readinessProbe:
             tcpSocket:
               port: 59999
