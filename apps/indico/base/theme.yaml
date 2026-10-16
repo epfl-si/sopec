@@ -604,6 +604,56 @@ data:
     .category-title {
       font-weight: 700;
     }
+
+    /* Stray neutrals. Indico scatters a handful of one-off greys and near-blacks
+       (#333 on h2, #444 on list dates, #555 on breadcrumbs and the month
+       heading, #777 on the event timezone) that sit just off the EPFL ramp.
+       Found by auditing every rendered element on the live pages against the
+       Elements palette, then pinned to the two neutrals EPFL actually
+       defines: #212121 for text and #707070 for secondary text. */
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--epfl-black);
+    }
+
+    .event-list h3.current-month,
+    nav.main-breadcrumb,
+    nav.main-breadcrumb ol.path,
+    nav.main-breadcrumb ol.path li,
+    .event-list span.date,
+    .conference-page .timezone,
+    div.timezone {
+      color: var(--epfl-gray-600);
+    }
+
+    /* These three carry Indico's own selectors verbatim, because the generic
+       rules above lose to them on specificity:
+         .dialog-page header h2 / .management-page header h2 /
+         .fixed-width-standalone[-text]-page header h2,h3   -> #333
+         .datetime-widget .timezone / .date-widget / .time-widget -> #777 */
+    .dialog-page header h2,
+    .dialog-page header h3,
+    .management-page header h2,
+    .management-page header h3,
+    .fixed-width-standalone-page header h2,
+    .fixed-width-standalone-page header h3,
+    .fixed-width-standalone-text-page header h2,
+    .fixed-width-standalone-text-page header h3,
+    .search-page header h2,
+    .meeting-page header h2,
+    .conference-page header h2 {
+      color: var(--epfl-black);
+    }
+
+    .datetime-widget .timezone,
+    .date-widget .timezone,
+    .time-widget .timezone,
+    .infoline.date .timezone {
+      color: var(--epfl-gray-600);
+    }
   20-epfl-lists.css: |
     /* EPFL theme for Indico -- prose lists.
 
@@ -1594,6 +1644,39 @@ data:
       background: var(--epfl-white);
       border-top: 1px solid var(--epfl-gray-200);
       font-family: 'SuisseIntl', Arial, sans-serif;
+    }
+
+    /* The "current month" badge in event listings is hardcoded to a cream
+       (`.event-list h3.current-month span{background-color:#f6e8bd}`) that
+       predates Indico's --highlight-color token, so retinting that token does
+       not reach it. EPFL has no cream; this keeps the "you are here" cue using
+       the lightest red tint and EPFL's own text colour. */
+    .event-list h3.current-month span {
+      background-color: var(--highlight-color);
+      color: var(--epfl-black);
+      font-weight: 700;
+    }
+
+    /* Footer links ship at #bbb (`.footer .footer-links{color:#bbb}`), which is
+       both off-palette and well under the 4.5:1 contrast floor on white. EPFL
+       footers use ordinary black links; Indico's own selector is matched here
+       so the rule actually wins. */
+    .footer .footer-links,
+    .footer .footer-links li,
+    .footer .footer-links a,
+    .footer a {
+      color: var(--epfl-black);
+    }
+
+    .footer-links a:hover,
+    .footer a:hover {
+      color: var(--epfl-red);
+    }
+
+    /* Disabled tabs/items: EPFL's disabled neutral rather than a near-black. */
+    .ui.menu .item.disabled,
+    button.disabled.item {
+      color: var(--epfl-gray-500) !important;
     }
   70-epfl-conference.css: |
     /* EPFL theme for Indico -- conference / meeting event pages.
