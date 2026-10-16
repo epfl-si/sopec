@@ -29,7 +29,8 @@ spec:
         - name: celery
           image: quay-its.epfl.ch/svc0176/indico:3.3.14
           imagePullPolicy: Always
-          command: ["/opt/indico/run_celery.sh"]
+          command: ["/opt/indico/docker_entrypoint.sh"]
+          args: ["/opt/indico/run_celery.sh"]
           env:
             - name: PGHOST
               value: postgres-cluster-rw
@@ -135,7 +136,8 @@ spec:
         - name: celery-beat
           image: quay-its.epfl.ch/svc0176/indico:3.3.14
           imagePullPolicy: Always
-          command: ["/opt/indico/run_celery.sh", "beat"]
+          command: ["/opt/indico/docker_entrypoint.sh"]
+          args: ["/opt/indico/run_celery.sh", "beat"]
           env:
             - name: PGHOST
               value: postgres-cluster-rw

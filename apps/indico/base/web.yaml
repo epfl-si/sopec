@@ -67,7 +67,8 @@ spec:
         - name: indico
           image: quay-its.epfl.ch/svc0176/indico:3.3.14
           imagePullPolicy: Always
-          command: ["/opt/indico/run_indico.sh"]
+          command: ["/opt/indico/docker_entrypoint.sh"]
+          args: ["/opt/indico/run_indico.sh"]
           ports:
             - containerPort: 59999
               name: http
