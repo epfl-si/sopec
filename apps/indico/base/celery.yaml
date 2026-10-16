@@ -49,6 +49,8 @@ spec:
                 secretKeyRef:
                   name: indico-db-credentials
                   key: database
+            - name: XDG_CACHE_HOME
+              value: /opt/indico/tmp
           volumeMounts:
             - name: archive
               mountPath: /opt/indico/archive
@@ -156,6 +158,8 @@ spec:
                 secretKeyRef:
                   name: indico-db-credentials
                   key: database
+            - name: XDG_CACHE_HOME
+              value: /opt/indico/tmp
           volumeMounts:
             - name: archive
               mountPath: /opt/indico/archive
