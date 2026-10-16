@@ -215,4 +215,4 @@ spec:
               - key: favicon-32.png
                 path: files/favicon-32.png
               - key: epfl-footer.html
-                path: templates/footer.html
+                path: templates/core/footer.html
