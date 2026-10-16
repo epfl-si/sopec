@@ -12,7 +12,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: sopec
+  storageClassName: ocs-storagecluster-cephfs
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -28,4 +28,4 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: sopec
+  storageClassName: sc-gold
