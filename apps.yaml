@@ -13,6 +13,8 @@ apps:
     envs: [test, prod]
   - name: grist
     envs: [test, prod]
+  - name: indico
+    envs: [test, prod]
   - name: jdt-manager
     envs: [test, prod]
   - name: miamtrix

@@ -138,3 +138,11 @@ spec:
         passwordSecret:
           name: jdt-manager-db-credentials
         superuser: false
+      - connectionLimit: -1
+        ensure: present
+        inherit: true
+        login: true
+        name: indico-user
+        passwordSecret:
+          name: indico-db-credentials
+        superuser: false

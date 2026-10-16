@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: indico-data
+  labels:
+    app.kubernetes.io/name: indico
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/part-of: sopec
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: sopec
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: indico-redis-data
+  labels:
+    app.kubernetes.io/name: indico
+    app.kubernetes.io/component: redis
+    app.kubernetes.io/part-of: sopec
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: sopec

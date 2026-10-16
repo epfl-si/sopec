@@ -1,0 +1,18 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: indico
+  labels:
+    app.kubernetes.io/name: indico
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: sopec
+spec:
+  cluster:
+    name: postgres-cluster
+  name: indico-db
+  owner: indico-user
+  extensions:
+    - name: pg_trgm
+      ensure: present
+    - name: unaccent
+      ensure: present
