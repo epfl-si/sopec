@@ -7,37 +7,354 @@ metadata:
     app.kubernetes.io/component: theme
     app.kubernetes.io/part-of: sopec
 data:
-  epfl-footer.html: |
-    {# EPFL theme for Indico -- Brand Architecture rule (EPFL Brand
-       Guidelines, go.epfl.ch/identity): unit references must be separated
-       from the EPFL logo and marked with a red square smaller than the
-       logo. Pattern taken verbatim from Indico's own documented example
-       (docs/source/config/settings.rst, CUSTOMIZATION_DIR), which does
-       the same thing for CERN. #}
-    {% extends '~footer.html' %}
+  00-epfl-fonts.css: |
+    /* EPFL theme for Indico -- typefaces.
+       Source of truth: https://epfl-si.github.io/elements/ (live stylesheet
+       https://web2018.epfl.ch/8.7.0/css/elements.min.css). EPFL ships exactly
+       four SuisseIntl faces -- 400/700, normal/italic -- verified by probing
+       the CDN (Light/Medium/Bold all 404), so those are the four we declare.
 
-    {% block footer_logo %}
-        <a href="https://go.epfl.ch/fsd" class="footer-logo epfl-unit-label">
-            <span class="epfl-unit-square" aria-hidden="true"></span>
-            SOPEC -- ISAS-FSD
-        </a>
-    {% endblock %}
-  00-epfl-colors.css: |
+       Indico hardcodes `font-family` on ~60 selectors (.page-title, h1-h4,
+       .side-menu, .i-box-title, nav.main-breadcrumb, ...) rather than
+       inheriting from body, so overriding `body` alone loses on specificity
+       -- verified live: .page-title still computed "Roboto, sans-serif".
+       Instead of chasing every selector, we re-point the @font-face rules
+       for the families Indico asks for at the SuisseIntl files. Our CSS is
+       injected after Indico's bundles (/static/custom/css/* comes last in
+       <head>), and a later @font-face with the same family+weight+style wins,
+       so every Roboto/Muli/Maven Pro/Liberation request resolves to SuisseIntl
+       with no specificity fight and no per-selector maintenance.
+
+       Deliberately NOT remapped:
+         - icomoon-ultimate / Icons / outline-icons / brand-icons: glyph fonts.
+           Remapping them would replace every icon with a letter.
+         - Liberation Mono: monospace is semantic (code, diffs, log output). */
+
+    @font-face {
+      font-family: 'SuisseIntl';
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'SuisseIntl';
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'SuisseIntl';
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'SuisseIntl';
+      font-weight: 700;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff') format('woff');
+    }
+
+    /* Aliases: every text family Indico references, re-pointed at SuisseIntl.
+       "Roboto Light" is mapped to Regular because EPFL ships no light cut. */
+
+    @font-face {
+      font-family: 'Roboto';
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Roboto';
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Roboto';
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Roboto';
+      font-weight: 700;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Roboto Light';
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Roboto Light';
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Roboto Light';
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Roboto Light';
+      font-weight: 700;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Muli';
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Muli';
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Muli';
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Muli';
+      font-weight: 700;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Mulish';
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Mulish';
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Mulish';
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Mulish';
+      font-weight: 700;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Maven Pro';
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Maven Pro';
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Maven Pro';
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Maven Pro';
+      font-weight: 700;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Liberation Sans';
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Liberation Sans';
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Liberation Sans';
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Liberation Sans';
+      font-weight: 700;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Liberation Serif';
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Liberation Serif';
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-RegularItalic-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Liberation Serif';
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'Liberation Serif';
+      font-weight: 700;
+      font-style: italic;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBoldItalic-WebS.woff') format('woff');
+    }
+  01-epfl-colors.css: |
     /* EPFL theme for Indico -- color tokens.
-       Palette source: https://github.com/epfl-si/elements
-       (assets/config/bootstrap-variables.scss) and the live stylesheet
-       at https://web2018.epfl.ch/8.7.0/css/elements.min.css */
+       Every value below is lifted from the live EPFL Elements stylesheet
+       (https://web2018.epfl.ch/8.7.0/css/elements.min.css), which is what
+       https://epfl-si.github.io/elements/ documents. Where a comment cites a
+       rule, that rule was read out of that file -- not guessed. */
     :root {
+      /* .btn-primary{background-color:red} -- EPFL's red is pure #f00. */
       --epfl-red: #ff0000;
+      /* .btn-primary:hover{background-color:#d90000;border-color:#c00} */
+      --epfl-red-hover: #d90000;
+      --epfl-red-border: #cc0000;
+      /* .btn-primary:not(:disabled):not(.disabled):active{background:#891818} */
+      --epfl-red-active: #891818;
+      /* The darker red of the historic EPFL logo, used for dense UI chrome. */
       --epfl-red-dark: #b51f1f;
       --epfl-red-text: #c73333;
+
+      /* body{color:#212121} -- EPFL's "black" is never pure #000. */
       --epfl-black: #212121;
       --epfl-white: #ffffff;
-      --epfl-gray-100: #e6e6e6;
-      --epfl-gray-200: #d5d5d5;
-      --epfl-gray-300: #c1c1c1;
+
+      /* Grey ramp as used by Elements: .btn-secondary:hover #ececec,
+         $gray-200 #e6e6e6, .table-dark border #d5d5d5,
+         .table-bordered #c1c1c1, .form-control border #8e8e8e,
+         .form-control::placeholder #707070. */
+      --epfl-gray-050: #f5f5f5;
+      --epfl-gray-100: #ececec;
+      --epfl-gray-200: #e6e6e6;
+      --epfl-gray-300: #d5d5d5;
+      --epfl-gray-400: #c1c1c1;
       --epfl-gray-500: #8e8e8e;
       --epfl-gray-600: #707070;
+
+      /* EPFL's secondary brand colours (bootstrap-variables.scss). */
       --epfl-leman: #00a79f;
       --epfl-canard: #007480;
       --epfl-canard-dark: #004248;
@@ -45,22 +362,26 @@ data:
       --epfl-orange: #f5a623;
       --epfl-green: #7ed321;
       --epfl-green-text: #487915;
+
+      /* $border-radius: 2px -- EPFL corners are near-square, never pills. */
+      --epfl-radius: 2px;
     }
 
-    /* Indico's own theming hooks (see indico/web/client/styles) --
-       overriding these retints the whole UI consistently. */
+    /* Indico's own theming hooks (indico/web/client/styles/partials/_variables).
+       Retinting these carries most of the app for free; the later files in this
+       bundle only exist for the places Indico hardcodes a hex instead. */
     body {
       --text-color: var(--epfl-black);
       --text-inverse-color: var(--epfl-white);
-      --text-disabled-color: var(--epfl-gray-300);
+      --text-disabled-color: var(--epfl-gray-400);
       --text-secondary-color: var(--epfl-gray-600);
 
       --background-primary: var(--epfl-white);
-      --background-secondary: var(--epfl-gray-100);
-      --surface-default: var(--epfl-gray-100);
+      --background-secondary: var(--epfl-gray-050);
+      --surface-default: var(--epfl-gray-050);
       --surface-inverse-color: var(--epfl-black);
-      --surface-accent-color: var(--accent-color);
-      --surface-accent-secondary-color: #ffe0e0;
+      --surface-accent-color: var(--epfl-red);
+      --surface-accent-secondary-color: #ffe8e8;
       --surface-highlight-color: var(--epfl-gray-200);
       --surface-highlight-inverse-color: var(--text-secondary-color);
       --surface-disabled-color: var(--epfl-gray-100);
@@ -71,12 +392,16 @@ data:
 
       --accent-color: var(--epfl-red);
       --accent-secondary-color: var(--epfl-canard);
-      --accent-highlight-color: var(--epfl-red-dark);
-      --accent-border-color: var(--epfl-red-dark);
+      --accent-highlight-color: var(--epfl-red-hover);
+      --accent-border-color: var(--epfl-red-border);
       --active-color: var(--epfl-red);
       --visited-color: var(--epfl-canard-dark);
       --protected-color: var(--epfl-orange);
-      --highlight-color: #fdf0d8;
+      /* Indico's highlight is a cream (#fff9b8), used for "current" markers
+         (the month heading on the front page) and important messages. EPFL has
+         no cream anywhere in Elements, so this is the lightest red tint that
+         still reads as a highlight. */
+      --highlight-color: #fff0f0;
       --attention-color: var(--epfl-orange);
 
       --text-red-color: var(--epfl-red-text);
@@ -84,203 +409,1020 @@ data:
       --text-blue-color: var(--epfl-blue);
       --text-orange-color: var(--epfl-orange);
     }
-  01-epfl-buttons.css: |
-    /* EPFL theme for Indico -- buttons.
-       Selectors verified against a real production Indico customization:
-       https://meet.wipo.int/static/custom/css/01-buttons.css
-       Indico's semantic button modifiers: highlight (primary action),
-       accept (success), danger, warning. */
 
-    .i-button.highlight:not(.label):not(.borderless):not(.text-color),
-    .action-button:not(.label):not(.borderless):not(.text-color) {
-      background: var(--epfl-red);
-      border-color: var(--epfl-red-dark);
+    /* Indico's control / link / table tokens. Indico declares all of these on
+       `body` too, so these later declarations win on load order alone -- no
+       specificity tricks, and no hunting for the component selectors that
+       consume them.
+
+       The important one is --clickable-text-color. Indico resolves it to
+       --accent-color, so making the accent EPFL red turned every category and
+       event link red (verified live: `ul.category-list li a, .event-list li
+       .list-name a, .infogrid a, .footer a { color: var(--link-color) }`).
+       Elements wants the opposite -- black text, red underline, red on hover --
+       so the clickable-text tokens are pinned to black/red explicitly rather
+       than inheriting the accent. */
+    body {
+      --clickable-text-color: var(--epfl-black);
+      --clickable-text-highlight-color: var(--epfl-red);
+      --clickable-text-active-color: var(--epfl-red);
+      --clickable-text-used-color: var(--epfl-canard-dark);
+      --clickable-text-disabled-color: var(--epfl-gray-400);
+
+      /* $border-radius: 2px. Indico's default is 0.3em, which reads as a
+         rounded web-app control; EPFL corners are near-square. */
+      --control-border-radius: var(--epfl-radius);
+      /* Elements .form-control{padding:.375rem .75rem}; em so it tracks
+         Indico's 13px base rather than fighting it. */
+      --control-padding: 0.375em 0.75em;
+      --control-border-width: 1px;
+      /* Elements .form-control{border:1px solid #8e8e8e} */
+      --control-border-color: var(--epfl-gray-500);
+
+      /* Elements .table-bordered td,th{border:1px solid #c1c1c1} */
+      --table-border-color: var(--epfl-gray-400);
+      --table-header-border-color: var(--epfl-gray-400);
+
+      /* Indico's alert red (#c00) is already close; pin it to the EPFL cut. */
+      --msgbox-alert-key-color: var(--epfl-red-dark);
+
+      --container-separator-color: var(--epfl-gray-300);
+    }
+  10-epfl-type.css: |
+    /* EPFL theme for Indico -- typography and links.
+
+       Elements' link treatment (verified in elements.min.css):
+         a       { color:#212121; text-decoration:underline;
+                   text-decoration-color:#ff0000 }
+         a:hover { color:red }
+       i.e. black text with a RED underline at rest, going fully red on hover.
+       Indico ships the opposite (links computed rgb(255,0,0) with
+       text-decoration:none -- verified live), which reads as a warning rather
+       than a link, so this file flips it back.
+
+       Headings in Elements are weight 400 except h1 (700) and are black --
+       red is reserved for accents (links, buttons, bullets, the logo). */
+
+    body {
+      font-family: 'SuisseIntl', Arial, sans-serif;
+      color: var(--epfl-black);
+    }
+
+    /* Indico's layout is built for a 13px base and breaks (overflowing
+       toolbars, clipped tables) if pushed to Elements' 1rem, so the base
+       size stays Indico's. The typeface, colour and weights are EPFL's. */
+
+    h1, h2, h3, h4, h5, h6,
+    .page-title,
+    .category-title,
+    .banner .title,
+    .timetable-title,
+    .i-box-header .i-box-title,
+    nav.main-breadcrumb,
+    .side-menu,
+    .conference-page,
+    .contribution-list,
+    .speaker-list,
+    .category-info,
+    .corner-message,
+    header .page-description,
+    header .page-info {
+      font-family: 'SuisseIntl', Arial, sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6,
+    .page-title,
+    .category-title {
+      color: var(--epfl-black);
+    }
+
+    /* Elements: .h1,h1{font-weight:700}; h2-h6 stay at 400. */
+    h1,
+    .page-title {
       font-weight: 700;
     }
 
-    .i-button.highlight:not(.label):not(.borderless):not(.text-color):hover,
-    .action-button:not(.label):not(.borderless):not(.text-color):hover {
-      background: var(--epfl-red-dark);
-      border-color: var(--epfl-red-dark);
+    /* Serif descriptions are an Indico default (.i-box-description uses
+       "Liberation Serif"); EPFL is sans-serif throughout. */
+    .i-box-header .i-box-description,
+    .i-box-description,
+    .page-description,
+    .description,
+    .category-description,
+    .markdown-text {
+      font-family: 'SuisseIntl', Arial, sans-serif;
     }
 
+    /* Links: black with a red underline, red on hover. Scoped away from
+       anything that is really a control (buttons, menus, tabs, toolbars,
+       the user menu) -- those get their own treatment and would look broken
+       underlined. */
+    a:not(.i-button):not(.action-button):not(.ui):not([class*='icon-']):not(.title):not(.arrow) {
+      color: var(--epfl-black);
+      text-decoration-color: var(--epfl-red);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.15em;
+      transition: color 0.2s ease-in-out, text-decoration-color 0.2s ease-in-out;
+    }
+
+    a:not(.i-button):not(.action-button):not(.ui):not([class*='icon-']):not(.title):not(.arrow):hover,
+    a:not(.i-button):not(.action-button):not(.ui):not([class*='icon-']):not(.title):not(.arrow):focus {
+      color: var(--epfl-red);
+      text-decoration-color: var(--epfl-red);
+    }
+
+    /* Navigational and structural link clusters keep no underline -- Elements
+       does the same for .nav-link / .btn (`a:not(.btn){text-decoration:
+       underline}`). */
+    #global-menu a,
+    #global-menu button,
+    .side-menu a,
+    nav.main-breadcrumb a,
+    .toolbar a,
+    .i-tag,
+    .ui.menu a,
+    .ui.tabular.menu a,
+    .event-service-row a,
+    .timetable-item a,
+    .flashed-messages a {
+      text-decoration: none;
+    }
+
+    /* Dense application listings (category tree, event list, infogrid, footer)
+       deliberately diverge from Elements on one point: Elements underlines
+       every content link, but Indico stacks dozens of event titles per screen
+       and a permanent underline on each turns the page into noise. They keep
+       EPFL's colours -- black at rest, red on hover -- and gain the red
+       underline on hover only. Indico sets `text-decoration:none` on these at
+       specificity 0,2,2, so the selectors are matched here rather than relying
+       on the generic `a` rule. */
+    ul.category-list li a:hover,
+    .event-list li .list-name a:hover,
+    .infogrid a:hover,
+    .footer a:hover,
+    .event-list .toggle-hidden-events:hover {
+      text-decoration: underline;
+      text-decoration-color: var(--epfl-red);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.15em;
+    }
+
+    /* Prose containers follow Elements exactly: links are underlined in red
+       at rest and go fully red on hover. */
+    .markdown-text a,
+    .md-preview-wrapper a,
+    .wmd-preview a,
+    .page-description a,
+    .category-description a,
+    .summary-description a,
+    .conference-page .description a {
+      color: var(--epfl-black);
+      text-decoration: underline;
+      text-decoration-color: var(--epfl-red);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.15em;
+    }
+
+    .markdown-text a:hover,
+    .md-preview-wrapper a:hover,
+    .wmd-preview a:hover,
+    .page-description a:hover,
+    .category-description a:hover,
+    .summary-description a:hover,
+    .conference-page .description a:hover {
+      color: var(--epfl-red);
+    }
+
+    /* Elements: .h1,h1{font-size:3rem;line-height:1.1em;font-weight:700}.
+       Indico renders its page heading as h1.category-title / .page-title and
+       sets weight 400 on it, so the EPFL h1 weight is restored here. The size
+       stays Indico's 26px -- 3rem would push the heading out of the fixed
+       header strip it sits in. */
+    h1,
+    h1.category-title,
+    .page-title,
+    .category-title {
+      font-weight: 700;
+    }
+  20-epfl-lists.css: |
+    /* EPFL theme for Indico -- prose lists.
+
+       The most recognisable Elements detail: list markers are small RED
+       RECTANGLES, not dots, and ordered lists get red bold counters
+       (verified in elements.min.css):
+         ul>li          { list-style-type:none; padding-left:1rem; position:relative }
+         ul>li:before   { content:""; position:absolute; top:.7rem;
+                          right:calc(100% - .5rem); width:6px; height:5px;
+                          background:red }
+         ul ul>li:before    { background:0 0; border:1px solid red }  (outlined)
+         ul ul ul>li:before { background:red; border:none }
+         ol>li:before   { content:counter(item); font-weight:700; color:red }
+
+       Elements can apply this to every `ul` on the page because it styles
+       content sites. Indico is an application: it builds #global-menu, the
+       side menu, dropdowns, toolbars, the timetable and every Semantic-UI
+       widget out of ul/li too (37 <li> on the logged-out front page alone).
+       Applying the rule globally would scatter red squares through all of
+       them, so it is scoped to the containers that actually hold authored
+       prose, and opted out again for any widget nested inside those.
+
+       Offsets are in em, not Elements' rem: Indico's base is 13px rather
+       than EPFL's 16px, so em keeps the marker aligned to the text it
+       belongs to at any size. */
+
+    .markdown-text ul,
+    .md-preview-wrapper ul,
+    .wmd-preview ul,
+    .i-box-description ul,
+    .page-description ul,
+    .category-description ul,
+    .summary-description ul,
+    .conference-page .description ul {
+      padding-left: 1em;
+      margin-left: 0;
+      list-style: none;
+    }
+
+    .markdown-text ul > li,
+    .md-preview-wrapper ul > li,
+    .wmd-preview ul > li,
+    .i-box-description ul > li,
+    .page-description ul > li,
+    .category-description ul > li,
+    .summary-description ul > li,
+    .conference-page .description ul > li {
+      list-style-type: none;
+      padding-left: 1em;
+      position: relative;
+    }
+
+    .markdown-text ul > li::before,
+    .md-preview-wrapper ul > li::before,
+    .wmd-preview ul > li::before,
+    .i-box-description ul > li::before,
+    .page-description ul > li::before,
+    .category-description ul > li::before,
+    .summary-description ul > li::before,
+    .conference-page .description ul > li::before {
+      content: '';
+      position: absolute;
+      top: 0.5em;
+      right: calc(100% - 0.5em);
+      width: 6px;
+      height: 5px;
+      background: var(--epfl-red);
+    }
+
+    /* Second level: outlined square. Third: solid again. */
+    .markdown-text ul ul > li::before,
+    .md-preview-wrapper ul ul > li::before,
+    .wmd-preview ul ul > li::before,
+    .page-description ul ul > li::before,
+    .category-description ul ul > li::before,
+    .conference-page .description ul ul > li::before {
+      background: transparent;
+      border: 1px solid var(--epfl-red);
+    }
+
+    .markdown-text ul ul ul > li::before,
+    .md-preview-wrapper ul ul ul > li::before,
+    .wmd-preview ul ul ul > li::before,
+    .page-description ul ul ul > li::before,
+    .category-description ul ul ul > li::before,
+    .conference-page .description ul ul ul > li::before {
+      background: var(--epfl-red);
+      border: none;
+    }
+
+    /* Ordered lists: red bold counters. */
+    .markdown-text ol,
+    .md-preview-wrapper ol,
+    .wmd-preview ol,
+    .page-description ol,
+    .category-description ol,
+    .conference-page .description ol {
+      counter-reset: epfl-item;
+      padding-left: 1em;
+      margin-left: 0;
+      list-style: none;
+    }
+
+    .markdown-text ol > li,
+    .md-preview-wrapper ol > li,
+    .wmd-preview ol > li,
+    .page-description ol > li,
+    .category-description ol > li,
+    .conference-page .description ol > li {
+      list-style-type: none;
+      padding-left: 1em;
+      position: relative;
+    }
+
+    .markdown-text ol > li::before,
+    .md-preview-wrapper ol > li::before,
+    .wmd-preview ol > li::before,
+    .page-description ol > li::before,
+    .category-description ol > li::before,
+    .conference-page .description ol > li::before {
+      content: counter(epfl-item);
+      counter-increment: epfl-item;
+      position: absolute;
+      top: 0.15em;
+      right: calc(100% - 0.5em);
+      font-size: 0.8em;
+      font-weight: 700;
+      color: var(--epfl-red);
+    }
+
+    /* Opt-out: application widgets that happen to live inside a prose
+       container must keep their own markers. */
+    .markdown-text :is(ul, ol).list-inline > li::before,
+    .markdown-text :is(nav, .toolbar, .ui.menu, .i-tag-list) li::before,
+    .md-preview-wrapper :is(nav, .toolbar, .ui.menu, .i-tag-list) li::before,
+    .page-description :is(nav, .toolbar, .ui.menu, .i-tag-list) li::before,
+    .category-description :is(nav, .toolbar, .ui.menu, .i-tag-list) li::before,
+    .conference-page .description :is(nav, .toolbar, .ui.menu, .i-tag-list) li::before {
+      content: none;
+    }
+  30-epfl-buttons.css: |
+    /* EPFL theme for Indico -- buttons.
+
+       Elements' button scale (elements.min.css):
+         .btn           { padding:.68rem 1.4rem; font-size:1rem; line-height:1.5;
+                          border-radius:2px; font-weight:400; color:#212121 }
+         .btn-primary   { color:#fff; background-color:red; border-color:red }
+         .btn-primary:hover  { background-color:#d90000; border-color:#c00 }
+         .btn-primary:active  { background:#891818; border-color:#891818 }
+         .btn-secondary { color:#212121; background-color:#fff; border-color:#fff }
+         .btn-secondary:hover { background-color:#ececec; border-color:#e6e6e6 }
+         .btn-outline-primary { color:red; border-color:red }
+         .btn-outline-primary:hover { color:#fff; background-color:red }
+
+       Indico's own base is `.i-button{border-radius:2px; padding:4px 10px;
+       color:#777}` -- the radius already matches EPFL, so what changes here is
+       colour, weight and (moderately) padding.
+
+       On padding: Elements' .68rem/1.4rem is sized for content pages with a few
+       buttons. Indico packs them into toolbars, button groups and table rows, and
+       adopting that figure wholesale overflows those containers. Padding is
+       therefore raised toward EPFL (4px/10px -> 6px/14px) only for standalone
+       buttons, and left alone where Indico has grouped or icon-only buttons whose
+       geometry is load-bearing. Everything else -- the palette, the 2px corners,
+       the typeface -- is EPFL's exactly.
+
+       The :not(.label):not(.borderless):not(.text-color) chain mirrors Indico's
+       own modifier guards so borderless/label variants keep their flat look. */
+
+    .i-button,
+    .action-button,
+    button,
+    input[type='submit'],
+    input[type='button'] {
+      font-family: 'SuisseIntl', Arial, sans-serif;
+      border-radius: var(--epfl-radius);
+    }
+
+    /* Default (neutral) button: EPFL reads this as .btn-secondary -- white,
+       black label, grey hover -- in place of Indico's grey-on-grey gradient. */
+    .i-button:not(.label):not(.borderless):not(.text-color):not(.highlight):not(.accept):not(.danger):not(.warning),
+    .action-button:not(.label):not(.borderless):not(.text-color):not(.highlight):not(.accept):not(.danger):not(.warning) {
+      background: var(--epfl-white);
+      background-image: none;
+      border-color: var(--epfl-gray-300);
+      color: var(--epfl-black);
+      font-weight: 400;
+      text-shadow: none;
+      box-shadow: none;
+    }
+
+    .i-button:not(.label):not(.borderless):not(.text-color):not(.highlight):not(.accept):not(.danger):not(.warning):hover,
+    .action-button:not(.label):not(.borderless):not(.text-color):not(.highlight):not(.accept):not(.danger):not(.warning):hover {
+      background: var(--epfl-gray-100);
+      background-image: none;
+      border-color: var(--epfl-gray-200);
+      color: var(--epfl-black);
+    }
+
+    .i-button:not(.label):not(.borderless):not(.text-color):not(.highlight):not(.accept):not(.danger):not(.warning):active,
+    .i-button:not(.label):not(.borderless):not(.text-color):not(.highlight):not(.accept):not(.danger):not(.warning).open,
+    .action-button:not(.label):not(.borderless):not(.text-color):not(.highlight):not(.accept):not(.danger):not(.warning):active {
+      background: var(--epfl-gray-200);
+      background-image: none;
+      border-color: var(--epfl-gray-300);
+    }
+
+    /* Primary action == .btn-primary: EPFL red, white label, bold. */
+    .i-button.highlight:not(.label):not(.borderless):not(.text-color),
+    .action-button:not(.label):not(.borderless):not(.text-color),
+    button.highlight:not(.label):not(.borderless):not(.text-color) {
+      background: var(--epfl-red);
+      background-image: none;
+      border-color: var(--epfl-red);
+      color: var(--epfl-white);
+      font-weight: 700;
+      text-shadow: none;
+    }
+
+    .i-button.highlight:not(.label):not(.borderless):not(.text-color):hover,
+    .action-button:not(.label):not(.borderless):not(.text-color):hover,
+    button.highlight:not(.label):not(.borderless):not(.text-color):hover {
+      background: var(--epfl-red-hover);
+      background-image: none;
+      border-color: var(--epfl-red-border);
+      color: var(--epfl-white);
+    }
+
+    .i-button.highlight:not(.label):not(.borderless):not(.text-color):active,
+    .i-button.highlight:not(.label):not(.borderless):not(.text-color).open,
+    .action-button:not(.label):not(.borderless):not(.text-color):active {
+      background: var(--epfl-red-active);
+      background-image: none;
+      border-color: var(--epfl-red-active);
+    }
+
+    /* Semantic variants. EPFL has no green/amber button in Elements, so these
+       keep Indico's semantics using EPFL's secondary palette. */
     .i-button.accept:not(.label):not(.borderless):not(.text-color) {
-      background: var(--epfl-green);
+      background: var(--epfl-green-text);
+      background-image: none;
       border-color: var(--epfl-green-text);
+      color: var(--epfl-white);
+      font-weight: 700;
     }
 
     .i-button.accept:not(.label):not(.borderless):not(.text-color):hover {
-      background: var(--epfl-green-text);
-      border-color: var(--epfl-green-text);
+      background: #3b6211;
+      background-image: none;
+      border-color: #3b6211;
     }
 
     .i-button.danger:not(.label):not(.borderless):not(.text-color) {
       background: var(--epfl-red-dark);
+      background-image: none;
       border-color: var(--epfl-red-dark);
+      color: var(--epfl-white);
+      font-weight: 700;
+    }
+
+    .i-button.danger:not(.label):not(.borderless):not(.text-color):hover {
+      background: var(--epfl-red-active);
+      background-image: none;
+      border-color: var(--epfl-red-active);
     }
 
     .i-button.warning:not(.label):not(.borderless):not(.text-color) {
       background: var(--epfl-orange);
+      background-image: none;
       border-color: var(--epfl-orange);
       color: var(--epfl-black);
-    }
-
-    span.badge {
-      background: var(--epfl-canard);
-    }
-  02-epfl-conference-theme.css: |
-    /* EPFL theme for Indico -- conference/meeting event pages.
-       These pages (dist/css/conferences.*.css) use a *separate* set of
-       CSS custom properties from the rest of the app, defined on :root
-       (not body), normally meant to be customised per-event from the
-       event's own Layout settings. This file just changes the *default*
-       so unthemed events still look EPFL-branded; an organiser can still
-       override it for their own event. Verified live against a running
-       instance (view-source + computed styles), 2026-10-16. */
-    :root {
-      --conf-theme-header-bg: var(--epfl-red);
-      --conf-theme-header-border-bottom: var(--epfl-red-dark);
-      --conf-theme-header-text: var(--epfl-white);
-
-      --conf-theme-subtitle-bg: #fff5f5;
-      --conf-theme-subtitle-border: #f0d5d5;
-      --conf-theme-subtitle-text: var(--epfl-black);
-
-      --conf-theme-menu-bg: var(--epfl-gray-100);
-      --conf-theme-menu-border: var(--epfl-gray-200);
-      --conf-theme-menu-link: var(--epfl-black);
-      --conf-theme-menu-selected: var(--epfl-red);
-      --conf-theme-menu-selected-bg: var(--epfl-gray-100);
-      --conf-theme-menu-selected-border: var(--epfl-gray-200);
-      --conf-theme-hover-bg: var(--epfl-gray-100);
-
-      --conf-theme-support-bg: var(--epfl-gray-100);
-      --conf-theme-support-border: var(--epfl-gray-200);
-      --conf-theme-support-header-bg: var(--epfl-red);
-      --conf-theme-support-text: var(--epfl-gray-500);
-
-      --conf-theme-announcement-bg: #fff5f5;
-      --conf-theme-announcement-border: #f0d5d5;
-      --conf-theme-announcement-text: var(--epfl-black);
-    }
-
-    /* Indico hardcodes these two instead of using a CSS variable
-       (verified: dist/css/main.*.css has `.page-header-dark{background:
-       #424242}` and `.category-title{...color:#cb6d04}` as plain hex). */
-    .page-header-dark {
-      background: var(--epfl-black);
-    }
-
-    /* Real EPFL typography (epfl-si/elements, docs/design/typography.html)
-       keeps headings black -- red is an accent (buttons, links, logo),
-       not a heading color. */
-    .page-title,
-    .category-title,
-    .banner .title,
-    .conference-page header h2,
-    .conference-page section .header-row h2,
-    .conference-page section .header-row h3,
-    .conference-page h3,
-    .balloon-qtip .title-container .title {
-      color: var(--epfl-black);
-    }
-
-    /* Boxes (.i-box), tables and tags also hardcode non-EPFL colors
-       and fonts instead of using variables (verified live:
-       .i-box-header .i-box-title { color: #007cac; font-family:
-       "Roboto Light" }, .i-box-header .i-box-description { font-family:
-       "Liberation Serif" }). */
-    .i-box-header {
-      background-color: var(--epfl-gray-100);
-      border-bottom-color: var(--epfl-gray-200);
-    }
-
-    .i-box-header .i-box-title {
-      color: var(--epfl-black);
-      font-family: 'SuisseIntl', Arial, sans-serif;
       font-weight: 700;
     }
 
-    .i-box-header .i-box-description {
-      font-family: 'SuisseIntl', Arial, sans-serif;
+    /* Roomier hit area, EPFL-ward, but only for buttons Indico has not put in
+       a group / toolbar / table cell and that carry a text label. */
+    .i-button:not(.label):not(.borderless):not(.icon-only):not(.arrow):not(.color-button),
+    .action-button:not(.label):not(.borderless):not(.icon-only) {
+      padding: 6px 14px;
     }
 
-    table.i-table th {
-      background-color: var(--epfl-gray-100);
+    .toolbar .i-button,
+    .group .i-button,
+    .i-buttons-group .i-button,
+    td .i-button,
+    th .i-button,
+    .i-button.arrow,
+    .i-button.icon-only,
+    .i-button.color-button {
+      padding: 4px 10px;
     }
 
+    /* Borderless/label variants: EPFL black rather than Indico's #777. */
+    .i-button.borderless:not(.accept):not(.danger):not(.warning):not(.highlight),
+    .borderless.action-button {
+      color: var(--epfl-black) !important;
+    }
+
+    .i-button.borderless:not(.accept):not(.danger):not(.warning):not(.highlight):hover {
+      color: var(--epfl-red) !important;
+    }
+
+    /* Focus ring: Elements uses a soft red halo
+       (.btn-primary:active:focus{box-shadow:0 0 0 .2rem rgba(255,38,38,.5)}). */
+    .i-button:focus-visible,
+    .action-button:focus-visible,
+    button:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 0.2rem rgba(255, 38, 38, 0.5);
+    }
+
+    /* Tags/badges use EPFL's canard rather than Indico's blue. */
+    span.badge,
     .i-tag {
       background: var(--epfl-canard);
       border-color: var(--epfl-canard-dark);
+      border-radius: var(--epfl-radius);
     }
-  10-epfl-header.css: |
-    /* EPFL theme for Indico -- header & navigation.
-       Selectors verified against a real production Indico customization:
-       https://meet.wipo.int/static/custom/css/10-header.css */
+  40-epfl-inputs.css: |
+    /* EPFL theme for Indico -- form controls.
+
+       Elements' input (elements.min.css):
+         .form-control { padding:.375rem .75rem; font-size:1rem; line-height:1.5;
+                         color:#212121; background-color:#fff;
+                         border:1px solid #8e8e8e; border-radius:2px;
+                         height:auto }
+         .form-control:focus { border-color:#212121; outline:0;
+                               box-shadow:0 0 0 1px #d5d5d5 }
+         .form-control::placeholder { color:#707070; opacity:1 }
+         .form-control:disabled,[readonly] { background-color:#e6e6e6 }
+         label { margin-bottom:.5rem }  .form-group { margin-bottom:1rem }
+
+       The distinctive parts are the mid-grey 1px border (Indico ships
+       borderless inputs on a tinted ground -- verified live: border
+       "0px none"), the near-square 2px corner, and the focus state as a
+       black border plus a soft grey ring instead of a colour change.
+
+       Padding is given in em so it tracks Indico's 13px base instead of
+       fighting it, which keeps row heights inside tables and the timetable. */
+
+    input[type='text'],
+    input[type='search'],
+    input[type='email'],
+    input[type='password'],
+    input[type='url'],
+    input[type='tel'],
+    input[type='number'],
+    input[type='date'],
+    input[type='time'],
+    input[type='datetime-local'],
+    textarea,
+    select,
+    .ui.input > input,
+    .ui.selection.dropdown,
+    .ui.form input:not([type]),
+    .ui.form input[type='text'],
+    .ui.form textarea {
+      font-family: 'SuisseIntl', Arial, sans-serif;
+      color: var(--epfl-black);
+      background-color: var(--epfl-white);
+      border: 1px solid var(--epfl-gray-500);
+      border-radius: var(--epfl-radius);
+      padding: 0.375em 0.75em;
+      line-height: 1.5;
+      box-shadow: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input[type='text']:focus,
+    input[type='search']:focus,
+    input[type='email']:focus,
+    input[type='password']:focus,
+    input[type='url']:focus,
+    input[type='tel']:focus,
+    input[type='number']:focus,
+    input[type='date']:focus,
+    input[type='time']:focus,
+    input[type='datetime-local']:focus,
+    textarea:focus,
+    select:focus,
+    .ui.input > input:focus,
+    .ui.selection.dropdown:focus,
+    .ui.form input[type='text']:focus,
+    .ui.form textarea:focus {
+      color: var(--epfl-black);
+      background-color: var(--epfl-white);
+      border-color: var(--epfl-black);
+      outline: 0;
+      box-shadow: 0 0 0 1px var(--epfl-gray-300);
+    }
+
+    input::placeholder,
+    textarea::placeholder,
+    .ui.form input::placeholder,
+    .ui.form textarea::placeholder {
+      color: var(--epfl-gray-600);
+      opacity: 1;
+    }
+
+    input:disabled,
+    input[readonly],
+    textarea:disabled,
+    textarea[readonly],
+    select:disabled {
+      background-color: var(--epfl-gray-200);
+      color: var(--epfl-gray-600);
+      opacity: 1;
+    }
+
+    /* Elements' label/field rhythm. Indico already has its own field grid in
+       management forms, so only the generic spacing is set. */
+    .form-group {
+      margin-bottom: 1em;
+    }
+
+    .form-field label,
+    .i-form-field label,
+    label.form-field-label {
+      margin-bottom: 0.5em;
+      color: var(--epfl-black);
+    }
+
+    /* Checkboxes and radios take the EPFL red as their accent, which is the
+       one-property way to brand them consistently across browsers. */
+    input[type='checkbox'],
+    input[type='radio'] {
+      accent-color: var(--epfl-red);
+    }
+
+    /* Indico's search field in the header sits on a tinted ground; give it the
+       same EPFL border treatment so it does not read as a different system. */
+    .search-box input,
+    #search-input,
+    .global-menu input[type='text'] {
+      border: 1px solid var(--epfl-gray-500);
+      border-radius: var(--epfl-radius);
+      background: var(--epfl-white);
+    }
+
+    /* Elements keeps its focus ring visible for keyboard users on every
+       control, not just buttons. */
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+      outline: none;
+    }
+  45-epfl-semantic.css: |
+    /* EPFL theme for Indico -- Semantic UI components.
+
+       Indico's newer screens (search, room booking, registration, most
+       dialogs) are React + Semantic UI rather than the jQuery/.i-button
+       stack, and Semantic ships its own palette: the "new" badge on the
+       front page is <span class="ui label mini blue"> at #0099cc, which is
+       nowhere in the EPFL system. Semantic's colour classes are applied as
+       literal names (.blue, .red, .teal, ...), so they are remapped here to
+       the nearest EPFL token rather than left at Semantic's defaults.
+
+       Semantic's own rules carry !important on many colour declarations
+       (.ui.blue.label{background-color:#2185d0!important}), so the
+       overrides have to match that to take effect. */
+
+    .ui,
+    .ui.button,
+    .ui.label,
+    .ui.input > input,
+    .ui.header,
+    .ui.message,
+    .ui.menu,
+    .ui.table,
+    .ui.form {
+      font-family: 'SuisseIntl', Arial, sans-serif;
+    }
+
+    /* Primary action == EPFL red, matching .btn-primary. */
+    .ui.primary.button,
+    .ui.primary.buttons .button {
+      background-color: var(--epfl-red) !important;
+      color: var(--epfl-white) !important;
+      border-radius: var(--epfl-radius);
+      font-weight: 700;
+    }
+
+    .ui.primary.button:hover,
+    .ui.primary.button:focus,
+    .ui.primary.buttons .button:hover {
+      background-color: var(--epfl-red-hover) !important;
+      color: var(--epfl-white) !important;
+    }
+
+    .ui.primary.button:active {
+      background-color: var(--epfl-red-active) !important;
+    }
+
+    /* Neutral button == .btn-secondary: white, black label, grey hover. */
+    .ui.button {
+      border-radius: var(--epfl-radius);
+      background-color: var(--epfl-gray-100);
+      color: var(--epfl-black);
+    }
+
+    .ui.button:hover,
+    .ui.button:focus {
+      background-color: var(--epfl-gray-200);
+      color: var(--epfl-black);
+    }
+
+    /* Semantic's named colours remapped onto EPFL tokens. Blue and teal both
+       collapse onto canard -- EPFL has no mid-blue -- and red onto EPFL red. */
+    .ui.blue.label,
+    .ui.blue.button,
+    .ui.teal.label,
+    .ui.teal.button,
+    .ui.label.blue,
+    .ui.label.teal {
+      background-color: var(--epfl-canard) !important;
+      border-color: var(--epfl-canard-dark) !important;
+      color: var(--epfl-white) !important;
+    }
+
+    .ui.blue.button:hover,
+    .ui.teal.button:hover {
+      background-color: var(--epfl-canard-dark) !important;
+    }
+
+    .ui.red.label,
+    .ui.red.button,
+    .ui.label.red {
+      background-color: var(--epfl-red) !important;
+      border-color: var(--epfl-red-border) !important;
+      color: var(--epfl-white) !important;
+    }
+
+    .ui.red.button:hover {
+      background-color: var(--epfl-red-hover) !important;
+    }
+
+    .ui.green.label,
+    .ui.green.button,
+    .ui.label.green {
+      background-color: var(--epfl-green-text) !important;
+      border-color: var(--epfl-green-text) !important;
+      color: var(--epfl-white) !important;
+    }
+
+    .ui.orange.label,
+    .ui.orange.button,
+    .ui.yellow.label {
+      background-color: var(--epfl-orange) !important;
+      border-color: var(--epfl-orange) !important;
+      color: var(--epfl-black) !important;
+    }
+
+    .ui.grey.label,
+    .ui.grey.button {
+      background-color: var(--epfl-gray-500) !important;
+      color: var(--epfl-white) !important;
+    }
+
+    /* Labels keep EPFL's near-square corners rather than Semantic's pills. */
+    .ui.label {
+      border-radius: var(--epfl-radius);
+      font-family: 'SuisseIntl', Arial, sans-serif;
+    }
+
+    /* Inputs: same treatment as the jQuery-era controls (see 40-epfl-inputs). */
+    .ui.input > input,
+    .ui.form input[type='text'],
+    .ui.form input[type='email'],
+    .ui.form input[type='password'],
+    .ui.form input[type='number'],
+    .ui.form textarea,
+    .ui.selection.dropdown {
+      border: 1px solid var(--epfl-gray-500);
+      border-radius: var(--epfl-radius);
+      color: var(--epfl-black);
+      font-family: 'SuisseIntl', Arial, sans-serif;
+    }
+
+    .ui.input > input:focus,
+    .ui.form input[type='text']:focus,
+    .ui.form textarea:focus,
+    .ui.selection.dropdown:focus,
+    .ui.selection.dropdown.active {
+      border-color: var(--epfl-black);
+      box-shadow: 0 0 0 1px var(--epfl-gray-300);
+    }
+
+    /* Segments and messages: EPFL card geometry. */
+    .ui.segment,
+    .ui.segments {
+      border-radius: var(--epfl-radius);
+      border-color: var(--epfl-gray-200);
+      box-shadow: none;
+    }
+
+    .ui.message {
+      border-radius: var(--epfl-radius);
+    }
+
+    .ui.info.message {
+      background: #f1f8f9;
+      box-shadow: 0 0 0 1px var(--epfl-canard) inset;
+      color: var(--epfl-canard-dark);
+    }
+
+    .ui.error.message,
+    .ui.negative.message {
+      background: #fff5f5;
+      box-shadow: 0 0 0 1px var(--epfl-red-dark) inset;
+      color: var(--epfl-red-dark);
+    }
+
+    /* Active tab / menu item takes the EPFL red marker. */
+    .ui.secondary.menu .active.item,
+    .ui.tabular.menu .active.item {
+      border-bottom: 2px solid var(--epfl-red);
+      color: var(--epfl-black);
+      font-weight: 700;
+    }
+
+    .ui.menu .item {
+      font-family: 'SuisseIntl', Arial, sans-serif;
+    }
+
+    .ui.checkbox input:checked ~ .box::before,
+    .ui.checkbox input:checked ~ label::before {
+      background: var(--epfl-red) !important;
+      border-color: var(--epfl-red) !important;
+    }
+
+    .ui.checkbox input:checked ~ .box::after,
+    .ui.checkbox input:checked ~ label::after {
+      color: var(--epfl-white) !important;
+    }
+
+    .ui.header {
+      color: var(--epfl-black);
+      font-family: 'SuisseIntl', Arial, sans-serif;
+    }
+
+    /* Semantic's own `.ui.menu .active.item` sets a dark 2px underline at a
+       specificity this file's earlier rule does not beat (verified live:
+       computed border-bottom "2px solid rgb(49,57,60)" on <button class="active
+       item">), so the EPFL red marker is forced here. This is the same red
+       underline the top nav and the side menu use, which is what makes "where
+       am I" read consistently across the three different menu systems Indico
+       ships. */
+    .ui.menu .item.active,
+    .ui.secondary.menu .item.active,
+    .ui.tabular.menu .item.active,
+    .ui.menu button.item.active {
+      border-bottom-color: var(--epfl-red) !important;
+      color: var(--epfl-black) !important;
+      font-weight: 700;
+    }
+  50-epfl-header.css: |
+    /* EPFL theme for Indico -- header, top navigation, breadcrumb.
+
+       Two Elements patterns are reproduced here.
+
+       1. The top bar. Elements' nav is a WHITE bar with bold black links; the
+          red appears only as a small marker on the active/hovered item
+          (.nav-main li.current-menu-item>a{background:red;color:#fff},
+          .nav-main a:hover{background:#e6e6e6}). Indico ships a dark bar of
+          pill buttons and sets `background:var(--surface-inverse-color)`
+          directly on #global-menu, so retinting the variable is not enough --
+          the element itself has to be overridden.
+
+       2. The "header-light" sub-site lockup, which is how EPFL brands a
+          service that is not www.epfl.ch:
+            .header-light .logo { margin-right:1rem; padding-right:1rem;
+                                  border-right:1px solid #c1c1c1 }
+            .header-light .site-title { font-size:1rem; color:red;
+                                        text-transform:uppercase }
+            .header-light p.site-title { font-weight:700; line-height:1.1em }
+          i.e. the EPFL logo, a thin vertical rule, then the service name in
+          red uppercase bold. Indico's header only has the logo link
+          (#header-logo > img.header-logo), so the rule and the wordmark are
+          added around it rather than requiring a template change. */
 
     div.page-header {
       background-color: var(--epfl-white);
+      border-bottom: 1px solid var(--epfl-gray-200);
     }
 
     div.page-header img.header-logo {
       height: 32px;
-      margin: 12px 24px;
+      margin: 12px 0;
     }
 
-    /* Indico's #global-menu rule (dist/css/main.*.css) hardcodes
-       background: var(--surface-inverse-color) directly on the element
-       (not just via --menu-background-color), so the var overrides
-       above aren't enough on their own -- the real EPFL top nav
-       (epfl-si/elements, header.scss) is a white bar with bold black
-       links and a small red underline/dot on hover, not a dark bar
-       with pill buttons, so that's what we reproduce here. */
+    /* The header-light lockup: logo | INDICO */
+    #header-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 0 24px;
+      text-decoration: none;
+    }
+
+    #header-logo::after {
+      content: 'Indico';
+      padding-left: 1rem;
+      border-left: 1px solid var(--epfl-gray-400);
+      color: var(--epfl-red);
+      font-family: 'SuisseIntl', Arial, sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.1em;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+    }
+
+    /* Top bar: white ground, bold black links, red marker on hover/active. */
     #global-menu {
       background: var(--epfl-white);
-      border-bottom: 1px solid var(--epfl-gray-200);
+      border-bottom: 1px solid var(--epfl-gray-300);
       --menu-background-color: transparent;
       --menu-text-color: var(--epfl-black);
       --menu-text-hover-color: var(--epfl-red);
-      --menu-background-hover-color: var(--epfl-gray-100);
+      --menu-background-hover-color: var(--epfl-gray-200);
     }
 
     #global-menu > menu > li > :is(a, button) {
+      font-family: 'SuisseIntl', Arial, sans-serif;
       font-weight: 700;
+      font-size: 0.83rem;
       position: relative;
+      background: transparent;
+      color: var(--epfl-black);
+      border-radius: 0;
     }
 
+    #global-menu > menu > li > :is(a, button):hover {
+      background: var(--epfl-gray-200);
+      color: var(--epfl-black);
+    }
+
+    /* The 6x5 red marker Elements uses for list bullets doubles as the nav
+       indicator, which is what ties the bar to the rest of the identity. */
     #global-menu > menu > li > :is(a, button)::after {
       content: '';
       position: absolute;
       left: 1em;
-      bottom: 0.4em;
-      width: 7px;
-      height: 6px;
+      bottom: 0.35em;
+      width: 6px;
+      height: 5px;
       background: var(--epfl-red);
       opacity: 0;
       transition: opacity 0.2s;
     }
 
     #global-menu > menu > li > :is(a, button):hover::after,
-    #global-menu > menu > li > :is(a, button).open::after {
+    #global-menu > menu > li > :is(a, button).open::after,
+    #global-menu > menu > li > :is(a, button)[aria-expanded='true']::after {
       opacity: 1;
     }
 
-    /* The EPFL styleguide uses near-square corners ($border-radius: 2px) */
-    .i-button,
-    input,
-    select,
-    textarea {
-      border-radius: 2px;
+    /* Dropdowns opened from the top bar: white card, 2px corners, grey hover
+       -- Elements' .dropdown-menu rather than Indico's dark panel. */
+    #global-menu menu menu {
+      background: var(--epfl-white);
+      border: 1px solid var(--epfl-gray-300);
+      border-radius: var(--epfl-radius);
+      box-shadow: 0 2px 6px rgba(33, 33, 33, 0.12);
+    }
+
+    #global-menu menu menu a {
+      color: var(--epfl-black);
+      font-weight: 400;
+    }
+
+    #global-menu menu menu a:hover {
+      background: var(--epfl-gray-200);
+      color: var(--epfl-black);
+    }
+
+    /* Breadcrumb: Elements underlines the whole strip and strips bullets
+       (.breadcrumb-wrapper{border-bottom:1px solid #d5d5d5};
+       .breadcrumb li:before{content:none}). */
+    nav.main-breadcrumb {
+      font-family: 'SuisseIntl', Arial, sans-serif;
+      font-size: 0.83rem;
+      border-bottom: 1px solid var(--epfl-gray-300);
+    }
+
+    nav.main-breadcrumb li::before {
+      content: none;
+    }
+
+    nav.main-breadcrumb a {
+      color: var(--epfl-black);
+    }
+
+    nav.main-breadcrumb a:hover {
+      color: var(--epfl-red);
+    }
+
+    /* Side menu: active item takes the red block treatment Elements gives
+       .nav-main li.current-menu-item. */
+    .side-menu .item.active,
+    .side-menu li.active > a {
+      border-left: 3px solid var(--epfl-red);
+      font-weight: 700;
+    }
+
+    .side-menu a:hover {
+      background: var(--epfl-gray-200);
+      color: var(--epfl-black);
     }
 
     /* Brand Architecture rule (EPFL Brand Guidelines, go.epfl.ch/identity):
-       "Organizational unit references must always be separated from the
-       EPFL logo [...] accompanied by the red square and must be smaller
-       than the logo." Rendered in the footer via ~footer.html below. */
+       organisational-unit references must be separated from the EPFL logo and
+       accompanied by a red square smaller than the logo. Used by the footer
+       override (templates/core/footer.html). */
     .epfl-unit-label {
       display: inline-flex;
       align-items: center;
       gap: 0.4em;
+      font-family: 'SuisseIntl', Arial, sans-serif;
       font-size: 0.8rem;
       font-weight: 700;
       color: var(--epfl-black);
@@ -298,47 +1440,227 @@ data:
       flex: 0 0 auto;
       background: var(--epfl-red);
     }
-  20-epfl-type.css: |
-    /* EPFL theme for Indico -- typography.
-       Font hotlinked from EPFL's own styleguide reference site -- the
-       same font https://www.epfl.ch itself loads. Falls back to Arial
-       if that site is ever unreachable (font-display: swap). */
 
-    @font-face {
-      font-family: 'SuisseIntl';
-      font-weight: 400;
-      font-display: swap;
-      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff2') format('woff2'),
-           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff') format('woff');
+    /* Event pages put a utility bar above the event banner. Indico ships it
+       charcoal (`.page-header-dark{background:#424242}` hardcoded in
+       dist/css/main.*.css) and colours its icons #bbb to suit. Elements has no
+       dark chrome -- its nav is white with black marks and a hairline rule --
+       so the bar is flipped to match #global-menu, and the icon colour has to
+       be flipped with it or the icons would vanish against the new ground. */
+    .page-header-dark {
+      background: var(--epfl-white);
+      border-bottom: 1px solid var(--epfl-gray-300);
     }
 
-    @font-face {
-      font-family: 'SuisseIntl';
+    .page-header-dark .i-button,
+    .page-header-dark .i-button.text-color,
+    .page-header-dark a,
+    .page-header-dark button {
+      color: var(--epfl-black) !important;
+    }
+
+    .page-header-dark .i-button:hover,
+    .page-header-dark a:hover,
+    .page-header-dark button:hover {
+      color: var(--epfl-red) !important;
+      background: var(--epfl-gray-200);
+    }
+  60-epfl-boxes.css: |
+    /* EPFL theme for Indico -- boxes, cards, tables, messages.
+
+       Elements (elements.min.css):
+         .card        { background:#fff; border:1px solid #d5d5d5;
+                        border-radius:2px }  then flattened to
+                        { border-color:#e6e6e6; border-radius:0 }
+         .card-header { padding:.9rem 1.35rem; background-color:transparent;
+                        border-bottom:1px solid #d5d5d5 }
+         .card-body   { padding:1.35rem }
+         table        { border-collapse:collapse; font-size:.83rem }
+         .table-bordered td,th { border:1px solid #c1c1c1 }
+         .list-group-item { padding:.75rem 1.25rem; background-color:#fff;
+                            border:1px solid rgba(33,33,33,.125) }
+
+       Indico's .i-box is the direct analogue of .card but hardcodes a teal
+       title (.i-box-header .i-box-title{color:#007cac}) and a serif
+       description, neither of which exists in the EPFL system. */
+
+    .i-box {
+      background: var(--epfl-white);
+      border-color: var(--epfl-gray-200);
+      border-radius: var(--epfl-radius);
+      box-shadow: none;
+    }
+
+    .i-box-header {
+      background-color: var(--epfl-white);
+      background-image: none;
+      border-bottom: 1px solid var(--epfl-gray-300);
+      padding: 0.9rem 1.35rem;
+    }
+
+    .i-box-header .i-box-title {
+      color: var(--epfl-black);
+      font-family: 'SuisseIntl', Arial, sans-serif;
       font-weight: 700;
-      font-display: swap;
-      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff2') format('woff2'),
-           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff') format('woff');
     }
 
-    body {
+    .i-box-header .i-box-description {
+      color: var(--epfl-gray-600);
       font-family: 'SuisseIntl', Arial, sans-serif;
     }
 
-    /* Black links, red on hover -- epfl-si/elements' link.scss behaviour */
-    a {
-      color: var(--epfl-black);
-      text-decoration-color: var(--epfl-gray-500);
-      text-decoration-thickness: 0.08em;
-      text-underline-offset: 0.14em;
+    /* Tables: EPFL's smaller type and mid-grey rules, with a plain grey
+       header band rather than Indico's gradient. */
+    table.i-table,
+    .i-table {
+      border-collapse: collapse;
+      font-size: 0.83rem;
     }
 
-    a:hover,
-    a:focus,
-    a:active {
-      color: var(--epfl-red);
-      text-decoration-color: var(--epfl-red);
+    table.i-table th,
+    .i-table thead th {
+      background-color: var(--epfl-gray-100);
+      background-image: none;
+      color: var(--epfl-black);
+      font-family: 'SuisseIntl', Arial, sans-serif;
+      font-weight: 700;
+      border-color: var(--epfl-gray-400);
     }
-  30-epfl-cookie-consent.css: |
+
+    table.i-table td,
+    .i-table td {
+      border-color: var(--epfl-gray-300);
+    }
+
+    table.i-table tbody tr:hover > td {
+      background-color: var(--epfl-gray-050);
+    }
+
+    /* Semantic-UI tables appear in the newer React views; keep them in step. */
+    .ui.table {
+      border-color: var(--epfl-gray-300);
+      border-radius: var(--epfl-radius);
+      font-family: 'SuisseIntl', Arial, sans-serif;
+    }
+
+    .ui.table thead th {
+      background: var(--epfl-gray-100);
+      color: var(--epfl-black);
+      font-family: 'SuisseIntl', Arial, sans-serif;
+    }
+
+    /* List rows (category and event listings) read as Elements' .list-group:
+       white rows, hairline rule, grey hover. */
+    .event-list .event-row,
+    .category-list .item,
+    .list-group-item {
+      background-color: var(--epfl-white);
+      border-color: rgba(33, 33, 33, 0.125);
+    }
+
+    .event-list .event-row:hover,
+    .category-list .item:hover {
+      background-color: var(--epfl-gray-050);
+    }
+
+    /* Flashed messages / announcements: EPFL palette, 2px corners, no gradient. */
+    .flashed-messages .message-box,
+    div.announcement-bar:not([hidden]) {
+      border-radius: var(--epfl-radius);
+      font-family: 'SuisseIntl', Arial, sans-serif;
+      background-image: none;
+    }
+
+    .flashed-messages .message-box.error,
+    .flashed-messages .message-box.danger {
+      border-left: 4px solid var(--epfl-red-dark);
+    }
+
+    .flashed-messages .message-box.warning {
+      border-left: 4px solid var(--epfl-orange);
+    }
+
+    .flashed-messages .message-box.success {
+      border-left: 4px solid var(--epfl-green-text);
+    }
+
+    .flashed-messages .message-box.info {
+      border-left: 4px solid var(--epfl-canard);
+    }
+
+    /* Footer: white with a hairline top rule, matching Elements. */
+    .footer,
+    footer {
+      background: var(--epfl-white);
+      border-top: 1px solid var(--epfl-gray-200);
+      font-family: 'SuisseIntl', Arial, sans-serif;
+    }
+  70-epfl-conference.css: |
+    /* EPFL theme for Indico -- conference / meeting event pages.
+
+       These pages (dist/css/conferences.*.css) use a SEPARATE set of custom
+       properties from the rest of the app, declared on :root rather than body,
+       because they are meant to be overridden per event from the event's own
+       Layout settings. Setting them here only changes the DEFAULT, so an
+       organiser can still theme their own event; unthemed events inherit EPFL
+       branding instead of Indico blue. Verified live (view-source + computed
+       styles) against the running test instance. */
+    :root {
+      --conf-theme-header-bg: var(--epfl-red);
+      --conf-theme-header-border-bottom: var(--epfl-red-border);
+      --conf-theme-header-text: var(--epfl-white);
+
+      --conf-theme-subtitle-bg: #fff5f5;
+      --conf-theme-subtitle-border: #f0d5d5;
+      --conf-theme-subtitle-text: var(--epfl-black);
+
+      --conf-theme-menu-bg: var(--epfl-white);
+      --conf-theme-menu-border: var(--epfl-gray-300);
+      --conf-theme-menu-link: var(--epfl-black);
+      --conf-theme-menu-selected: var(--epfl-red);
+      --conf-theme-menu-selected-bg: var(--epfl-gray-200);
+      --conf-theme-menu-selected-border: var(--epfl-gray-300);
+      --conf-theme-hover-bg: var(--epfl-gray-200);
+
+      --conf-theme-support-bg: var(--epfl-gray-050);
+      --conf-theme-support-border: var(--epfl-gray-200);
+      --conf-theme-support-header-bg: var(--epfl-red);
+      --conf-theme-support-text: var(--epfl-gray-600);
+
+      --conf-theme-announcement-bg: #fff5f5;
+      --conf-theme-announcement-border: #f0d5d5;
+      --conf-theme-announcement-text: var(--epfl-black);
+    }
+
+    /* Elements keeps headings black -- red is an accent, not a heading colour
+       (epfl-si/elements, docs/design/typography.html). */
+    .page-title,
+    .category-title,
+    .banner .title,
+    .conference-page header h2,
+    .conference-page section .header-row h2,
+    .conference-page section .header-row h3,
+    .conference-page h3,
+    .balloon-qtip .title-container .title {
+      color: var(--epfl-black);
+    }
+
+    .conference-page,
+    .conference-page .description,
+    .meeting-page header .page-description,
+    .contribution-list,
+    .speaker-list,
+    .timetable-title {
+      font-family: 'SuisseIntl', Arial, sans-serif;
+    }
+
+    /* The event header wordmark sits on EPFL red, so it needs white type. */
+    .conference-page header h1,
+    .conference-page header .event-title {
+      color: var(--conf-theme-header-text);
+      font-weight: 700;
+    }
+  80-epfl-cookie-consent.css: |
     /* EPFL theme for Indico -- cookie consent banner.
        Colors match EPFL's real banner config (assets/components/organisms/
        cookie-consent/cookie-consent.js in epfl-si/elements):
@@ -384,6 +1706,15 @@ data:
 
     .epfl-cookie-consent-dismiss:hover {
       background: var(--epfl-red);
+    }
+
+    /* The banner is position:fixed, so it sits on top of the end of the page --
+       measured a 54px overlap over the footer on the event page. The script
+       adds .epfl-cookie-visible to <body> while the banner is mounted and
+       removes it on dismiss, so the reserved space exists only while it is
+       actually needed. */
+    body.epfl-cookie-visible {
+      padding-bottom: 5rem;
     }
   00-epfl-cookie-consent.js: |
     /* EPFL theme for Indico -- cookie consent banner.
@@ -449,11 +1780,15 @@ data:
         dismiss.addEventListener('click', function () {
           setCookie(COOKIE_NAME, '1', 365);
           banner.remove();
+          document.body.classList.remove('epfl-cookie-visible');
         });
 
         banner.appendChild(message);
         banner.appendChild(dismiss);
         document.body.appendChild(banner);
+        // Reserve room at the end of the page so the fixed banner does not
+        // cover the footer (measured a 54px overlap without this).
+        document.body.classList.add('epfl-cookie-visible');
       }
 
       if (document.readyState === 'loading') {
@@ -464,5 +1799,20 @@ data:
     })();
   epfl-logo.svg: |
     <svg id="logo_epfl_2019" data-name="logo epfl 2019" xmlns="http://www.w3.org/2000/svg" width="182.4" height="53" viewBox="0 0 182.4 53"><defs><style>.cls-1{fill:red;}</style></defs><title>epfl-logo-new</title><polygon class="cls-1" points="0 21.6 11.43 21.6 11.43 9.8 38.34 9.8 38.34 0 0 0 0 21.6"/><polygon class="cls-1" points="0 53 38.34 53 38.34 43.2 11.43 43.2 11.43 31.4 0 31.4 0 53"/><rect class="cls-1" x="11.43" y="21.6" width="24.61" height="9.8"/><path class="cls-1" d="M86,4.87a16.12,16.12,0,0,0-5.68-3.53A23.76,23.76,0,0,0,71.82,0H48.14V53H59.57V31.4H71.82a23.76,23.76,0,0,0,8.46-1.34A16.12,16.12,0,0,0,86,26.53a13.43,13.43,0,0,0,3.19-5,17.38,17.38,0,0,0,0-11.62A13.52,13.52,0,0,0,86,4.87ZM78,18.73a5.7,5.7,0,0,1-2.26,1.8,11.33,11.33,0,0,1-3.27.85,32,32,0,0,1-3.86.22H59.57V9.8h9.05a32,32,0,0,1,3.86.22,11,11,0,0,1,3.27.86A5.59,5.59,0,0,1,78,12.67a5,5,0,0,1,.86,3A5,5,0,0,1,78,18.73Z"/><polygon class="cls-1" points="155.47 43.2 155.47 0 144.04 0 144.04 53 182.38 53 182.38 43.2 155.47 43.2"/><polygon class="cls-1" points="97.42 21.6 108.85 21.6 108.85 9.8 135.76 9.8 135.76 0 97.42 0 97.42 21.6"/><rect class="cls-1" x="97.42" y="31.4" width="11.43" height="21.6"/><rect class="cls-1" x="108.85" y="21.6" width="24.61" height="9.8"/></svg>
+  epfl-footer.html: |
+    {# EPFL theme for Indico -- Brand Architecture rule (EPFL Brand
+       Guidelines, go.epfl.ch/identity): unit references must be separated
+       from the EPFL logo and marked with a red square smaller than the
+       logo. Pattern taken verbatim from Indico's own documented example
+       (docs/source/config/settings.rst, CUSTOMIZATION_DIR), which does
+       the same thing for CERN. #}
+    {% extends '~footer.html' %}
+
+    {% block footer_logo %}
+        <a href="https://go.epfl.ch/fsd" class="footer-logo epfl-unit-label">
+            <span class="epfl-unit-square" aria-hidden="true"></span>
+            SOPEC -- ISAS-FSD
+        </a>
+    {% endblock %}
 binaryData:
   favicon-32.png: iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAApVBMVEX/////AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD///8peGh5AAAANXRSTlMAFrBoH6imhWNHIKmIUDCejdzETPhJCAI2CZXqQ7j7bsBIGtBUD10uDVFgOThAHhvYgCgvVyvFNEkAAAABYktHRACIBR1IAAAACXBIWXMAAAG0AAABtAFMIk34AAAAB3RJTUUH4wMMDSMwwdrSegAAAJVJREFUOMvtkLkSgkAQBRcWUNd1REVERfEW1wuP9/+/5khgFZsZaUAHU11TXROMEDV/heMy0vP9oOGU3my5lUChrXWH0A17fYVA64FEJfCiYRyPCMl4MvWilN0KhJgBfAGYZ0IsgKUVrNYboi1ht8/ZD0S5FSiExhwJp9LPPCWMMZdPcC2Y2714lJ7wfL436a+/W/MlL6e1Dh9zycM2AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE5LTAzLTEyVDEzOjM1OjQ4KzAxOjAwJ1VygwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOS0wMy0xMlQxMzozNTo0OCswMTowMFYIyj8AAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAV3pUWHRSYXcgcHJvZmlsZSB0eXBlIGlwdGMAAHic4/IMCHFWKCjKT8vMSeVSAAMjCy5jCxMjE0uTFAMTIESANMNkAyOzVCDL2NTIxMzEHMQHy4BIoEouAOoXEXTyQjWVAAAAAElFTkSuQmCC

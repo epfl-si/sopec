@@ -196,18 +196,28 @@ spec:
           configMap:
             name: indico-theme
             items:
-              - key: 00-epfl-colors.css
-                path: css/00-epfl-colors.css
-              - key: 01-epfl-buttons.css
-                path: css/01-epfl-buttons.css
-              - key: 02-epfl-conference-theme.css
-                path: css/02-epfl-conference-theme.css
-              - key: 10-epfl-header.css
-                path: css/10-epfl-header.css
-              - key: 20-epfl-type.css
-                path: css/20-epfl-type.css
-              - key: 30-epfl-cookie-consent.css
-                path: css/30-epfl-cookie-consent.css
+              - key: 00-epfl-fonts.css
+                path: css/00-epfl-fonts.css
+              - key: 01-epfl-colors.css
+                path: css/01-epfl-colors.css
+              - key: 10-epfl-type.css
+                path: css/10-epfl-type.css
+              - key: 20-epfl-lists.css
+                path: css/20-epfl-lists.css
+              - key: 30-epfl-buttons.css
+                path: css/30-epfl-buttons.css
+              - key: 40-epfl-inputs.css
+                path: css/40-epfl-inputs.css
+              - key: 45-epfl-semantic.css
+                path: css/45-epfl-semantic.css
+              - key: 50-epfl-header.css
+                path: css/50-epfl-header.css
+              - key: 60-epfl-boxes.css
+                path: css/60-epfl-boxes.css
+              - key: 70-epfl-conference.css
+                path: css/70-epfl-conference.css
+              - key: 80-epfl-cookie-consent.css
+                path: css/80-epfl-cookie-consent.css
               - key: 00-epfl-cookie-consent.js
                 path: js/00-epfl-cookie-consent.js
               - key: epfl-logo.svg
