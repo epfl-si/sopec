@@ -28,7 +28,7 @@ spec:
           key: AWS_SECRET_ACCESS_KEY
   storage:
     size: 5Gi
-    storageClass: sc-gold
+    storageClass: sopec
   monitoring:
     enablePodMonitor: true
   enableSuperuserAccess: true
