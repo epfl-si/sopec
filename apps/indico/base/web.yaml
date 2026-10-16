@@ -84,6 +84,9 @@ spec:
               mountPath: /opt/indico/log
             - name: cache
               mountPath: /opt/indico/cache
+            - name: custom
+              mountPath: /opt/indico/custom
+              readOnly: true
           resources:
             requests:
               cpu: 10m
@@ -113,3 +116,17 @@ spec:
           emptyDir: {}
         - name: cache
           emptyDir: {}
+        - name: custom
+          configMap:
+            name: indico-theme
+            items:
+              - key: 00-epfl-colors.css
+                path: css/00-epfl-colors.css
+              - key: 01-epfl-buttons.css
+                path: css/01-epfl-buttons.css
+              - key: 10-epfl-header.css
+                path: css/10-epfl-header.css
+              - key: 20-epfl-type.css
+                path: css/20-epfl-type.css
+              - key: epfl-logo.svg
+                path: files/epfl-logo.svg

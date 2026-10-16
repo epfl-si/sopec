@@ -1,0 +1,193 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: indico-theme
+  labels:
+    app.kubernetes.io/name: indico
+    app.kubernetes.io/component: theme
+    app.kubernetes.io/part-of: sopec
+data:
+  00-epfl-colors.css: |
+    /* EPFL theme for Indico -- color tokens.
+       Palette source: https://github.com/epfl-si/elements
+       (assets/config/bootstrap-variables.scss) and the live stylesheet
+       at https://web2018.epfl.ch/8.7.0/css/elements.min.css */
+    :root {
+      --epfl-red: #ff0000;
+      --epfl-red-dark: #b51f1f;
+      --epfl-red-text: #c73333;
+      --epfl-black: #212121;
+      --epfl-white: #ffffff;
+      --epfl-gray-100: #e6e6e6;
+      --epfl-gray-200: #d5d5d5;
+      --epfl-gray-300: #c1c1c1;
+      --epfl-gray-500: #8e8e8e;
+      --epfl-gray-600: #707070;
+      --epfl-leman: #00a79f;
+      --epfl-canard: #007480;
+      --epfl-canard-dark: #004248;
+      --epfl-blue: #4a90e2;
+      --epfl-orange: #f5a623;
+      --epfl-green: #7ed321;
+      --epfl-green-text: #487915;
+    }
+
+    /* Indico's own theming hooks (see indico/web/client/styles) --
+       overriding these retints the whole UI consistently. */
+    body {
+      --text-color: var(--epfl-black);
+      --text-inverse-color: var(--epfl-white);
+      --text-disabled-color: var(--epfl-gray-300);
+      --text-secondary-color: var(--epfl-gray-600);
+
+      --background-primary: var(--epfl-white);
+      --background-secondary: var(--epfl-gray-100);
+      --surface-default: var(--epfl-gray-100);
+      --surface-inverse-color: var(--epfl-black);
+      --surface-accent-color: var(--accent-color);
+      --surface-accent-secondary-color: #ffe0e0;
+      --surface-highlight-color: var(--epfl-gray-200);
+      --surface-highlight-inverse-color: var(--text-secondary-color);
+      --surface-disabled-color: var(--epfl-gray-100);
+      --surface-disabled-inverse-color: var(--epfl-gray-500);
+
+      --border-default-color: var(--epfl-gray-300);
+      --border-disabled-color: var(--epfl-gray-200);
+
+      --accent-color: var(--epfl-red);
+      --accent-secondary-color: var(--epfl-canard);
+      --accent-highlight-color: var(--epfl-red-dark);
+      --accent-border-color: var(--epfl-red-dark);
+      --active-color: var(--epfl-red);
+      --visited-color: var(--epfl-canard-dark);
+      --protected-color: var(--epfl-orange);
+      --highlight-color: #fdf0d8;
+      --attention-color: var(--epfl-orange);
+
+      --text-red-color: var(--epfl-red-text);
+      --text-green-color: var(--epfl-green-text);
+      --text-blue-color: var(--epfl-blue);
+      --text-orange-color: var(--epfl-orange);
+    }
+  01-epfl-buttons.css: |
+    /* EPFL theme for Indico -- buttons.
+       Selectors verified against a real production Indico customization:
+       https://meet.wipo.int/static/custom/css/01-buttons.css
+       Indico's semantic button modifiers: highlight (primary action),
+       accept (success), danger, warning. */
+
+    .i-button.highlight:not(.label):not(.borderless):not(.text-color),
+    .action-button:not(.label):not(.borderless):not(.text-color) {
+      background: var(--epfl-red);
+      border-color: var(--epfl-red-dark);
+      font-weight: 700;
+    }
+
+    .i-button.highlight:not(.label):not(.borderless):not(.text-color):hover,
+    .action-button:not(.label):not(.borderless):not(.text-color):hover {
+      background: var(--epfl-red-dark);
+      border-color: var(--epfl-red-dark);
+    }
+
+    .i-button.accept:not(.label):not(.borderless):not(.text-color) {
+      background: var(--epfl-green);
+      border-color: var(--epfl-green-text);
+    }
+
+    .i-button.accept:not(.label):not(.borderless):not(.text-color):hover {
+      background: var(--epfl-green-text);
+      border-color: var(--epfl-green-text);
+    }
+
+    .i-button.danger:not(.label):not(.borderless):not(.text-color) {
+      background: var(--epfl-red-dark);
+      border-color: var(--epfl-red-dark);
+    }
+
+    .i-button.warning:not(.label):not(.borderless):not(.text-color) {
+      background: var(--epfl-orange);
+      border-color: var(--epfl-orange);
+      color: var(--epfl-black);
+    }
+
+    span.badge {
+      background: var(--epfl-canard);
+    }
+  10-epfl-header.css: |
+    /* EPFL theme for Indico -- header & navigation.
+       Selectors verified against a real production Indico customization:
+       https://meet.wipo.int/static/custom/css/10-header.css */
+
+    div.page-header {
+      background-color: var(--epfl-white);
+    }
+
+    div.page-header img.header-logo {
+      height: 32px;
+      margin: 12px 24px;
+    }
+
+    #global-menu {
+      --menu-background-color: var(--epfl-white);
+      --menu-text-color: var(--epfl-black);
+      --menu-text-hover-color: var(--epfl-red);
+      --menu-background-hover-color: var(--epfl-white);
+    }
+
+    #global-menu menu li {
+      border-bottom: 3px solid transparent;
+    }
+
+    #global-menu menu li:hover {
+      border-bottom: 3px solid var(--epfl-red);
+    }
+
+    /* The EPFL styleguide uses near-square corners ($border-radius: 2px) */
+    .i-button,
+    input,
+    select,
+    textarea {
+      border-radius: 2px;
+    }
+  20-epfl-type.css: |
+    /* EPFL theme for Indico -- typography.
+       Font hotlinked from EPFL's own styleguide reference site -- the
+       same font https://www.epfl.ch itself loads. Falls back to Arial
+       if that site is ever unreachable (font-display: swap). */
+
+    @font-face {
+      font-family: 'SuisseIntl';
+      font-weight: 400;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-Regular-WebS.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'SuisseIntl';
+      font-weight: 700;
+      font-display: swap;
+      src: url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff2') format('woff2'),
+           url('https://web2018.epfl.ch/2.0.0/fonts/SuisseIntl-SemiBold-WebS.woff') format('woff');
+    }
+
+    body {
+      font-family: 'SuisseIntl', Arial, sans-serif;
+    }
+
+    /* Black links, red on hover -- epfl-si/elements' link.scss behaviour */
+    a {
+      color: var(--epfl-black);
+      text-decoration-color: var(--epfl-gray-500);
+      text-decoration-thickness: 0.08em;
+      text-underline-offset: 0.14em;
+    }
+
+    a:hover,
+    a:focus,
+    a:active {
+      color: var(--epfl-red);
+      text-decoration-color: var(--epfl-red);
+    }
+  epfl-logo.svg: |
+    <svg id="logo_epfl_2019" data-name="logo epfl 2019" xmlns="http://www.w3.org/2000/svg" width="182.4" height="53" viewBox="0 0 182.4 53"><defs><style>.cls-1{fill:red;}</style></defs><title>epfl-logo-new</title><polygon class="cls-1" points="0 21.6 11.43 21.6 11.43 9.8 38.34 9.8 38.34 0 0 0 0 21.6"/><polygon class="cls-1" points="0 53 38.34 53 38.34 43.2 11.43 43.2 11.43 31.4 0 31.4 0 53"/><rect class="cls-1" x="11.43" y="21.6" width="24.61" height="9.8"/><path class="cls-1" d="M86,4.87a16.12,16.12,0,0,0-5.68-3.53A23.76,23.76,0,0,0,71.82,0H48.14V53H59.57V31.4H71.82a23.76,23.76,0,0,0,8.46-1.34A16.12,16.12,0,0,0,86,26.53a13.43,13.43,0,0,0,3.19-5,17.38,17.38,0,0,0,0-11.62A13.52,13.52,0,0,0,86,4.87ZM78,18.73a5.7,5.7,0,0,1-2.26,1.8,11.33,11.33,0,0,1-3.27.85,32,32,0,0,1-3.86.22H59.57V9.8h9.05a32,32,0,0,1,3.86.22,11,11,0,0,1,3.27.86A5.59,5.59,0,0,1,78,12.67a5,5,0,0,1,.86,3A5,5,0,0,1,78,18.73Z"/><polygon class="cls-1" points="155.47 43.2 155.47 0 144.04 0 144.04 53 182.38 53 182.38 43.2 155.47 43.2"/><polygon class="cls-1" points="97.42 21.6 108.85 21.6 108.85 9.8 135.76 9.8 135.76 0 97.42 0 97.42 21.6"/><rect class="cls-1" x="97.42" y="31.4" width="11.43" height="21.6"/><rect class="cls-1" x="108.85" y="21.6" width="24.61" height="9.8"/></svg>
