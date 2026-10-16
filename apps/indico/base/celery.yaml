@@ -30,6 +30,24 @@ spec:
           image: quay-its.epfl.ch/svc0176/indico:3.3.14
           imagePullPolicy: Always
           command: ["/opt/indico/run_celery.sh"]
+          env:
+            - name: PGHOST
+              value: postgres-cluster-rw
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: indico-db-credentials
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: indico-db-credentials
+                  key: password
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: indico-db-credentials
+                  key: database
           volumeMounts:
             - name: archive
               mountPath: /opt/indico/archive
@@ -118,6 +136,24 @@ spec:
           image: quay-its.epfl.ch/svc0176/indico:3.3.14
           imagePullPolicy: Always
           command: ["/opt/indico/run_celery.sh", "beat"]
+          env:
+            - name: PGHOST
+              value: postgres-cluster-rw
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: indico-db-credentials
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: indico-db-credentials
+                  key: password
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: indico-db-credentials
+                  key: database
           volumeMounts:
             - name: archive
               mountPath: /opt/indico/archive
