@@ -171,6 +171,9 @@ data:
       background: var(--epfl-black);
     }
 
+    /* Real EPFL typography (epfl-si/elements, docs/design/typography.html)
+       keeps headings black -- red is an accent (buttons, links, logo),
+       not a heading color. */
     .page-title,
     .category-title,
     .banner .title,
@@ -179,7 +182,36 @@ data:
     .conference-page section .header-row h3,
     .conference-page h3,
     .balloon-qtip .title-container .title {
-      color: var(--epfl-red);
+      color: var(--epfl-black);
+    }
+
+    /* Boxes (.i-box), tables and tags also hardcode non-EPFL colors
+       and fonts instead of using variables (verified live:
+       .i-box-header .i-box-title { color: #007cac; font-family:
+       "Roboto Light" }, .i-box-header .i-box-description { font-family:
+       "Liberation Serif" }). */
+    .i-box-header {
+      background-color: var(--epfl-gray-100);
+      border-bottom-color: var(--epfl-gray-200);
+    }
+
+    .i-box-header .i-box-title {
+      color: var(--epfl-black);
+      font-family: 'SuisseIntl', Arial, sans-serif;
+      font-weight: 700;
+    }
+
+    .i-box-header .i-box-description {
+      font-family: 'SuisseIntl', Arial, sans-serif;
+    }
+
+    table.i-table th {
+      background-color: var(--epfl-gray-100);
+    }
+
+    .i-tag {
+      background: var(--epfl-canard);
+      border-color: var(--epfl-canard-dark);
     }
   10-epfl-header.css: |
     /* EPFL theme for Indico -- header & navigation.
