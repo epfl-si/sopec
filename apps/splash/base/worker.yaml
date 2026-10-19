@@ -32,7 +32,7 @@ spec:
           envFrom:
             - secretRef:
                 name: splash-secrets
-          command: ["npm", "run", "worker"]
+          command: ["bun", "run", "worker"]
           resources:
             requests:
               cpu: 25m
