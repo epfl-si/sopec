@@ -146,3 +146,11 @@ spec:
         passwordSecret:
           name: indico-db-credentials
         superuser: false
+      - connectionLimit: -1
+        ensure: present
+        inherit: true
+        login: true
+        name: splash-user
+        passwordSecret:
+          name: splash-db-credentials
+        superuser: false
