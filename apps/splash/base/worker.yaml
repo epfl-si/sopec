@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splash-worker
+  labels:
+    app.kubernetes.io/name: splash
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/part-of: sopec
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: splash
+      app.kubernetes.io/component: worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: splash
+        app.kubernetes.io/component: worker
+        app.kubernetes.io/part-of: sopec
+    spec:
+      imagePullSecrets:
+        - name: svc0176-pull-secret
+      containers:
+        - name: splash
+          image: quay-its.epfl.ch/svc0176/splash:1.0.0
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: splash-secrets
+          command: ["npm", "run", "worker"]
+          resources:
+            requests:
+              cpu: 25m
+              memory: 256Mi
+            limits:
+              memory: 256Mi
