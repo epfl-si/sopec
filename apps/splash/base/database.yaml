@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: splash
+  labels:
+    app.kubernetes.io/name: splash
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: sopec
+spec:
+  cluster:
+    name: postgres-cluster
+  name: splash-db
+  owner: splash-user
