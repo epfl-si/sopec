@@ -19,3 +19,9 @@ RUN chgrp -R 0 /opt/indico && \
 ENV HOME=/opt/indico
 
 USER indico
+
+# Sixpay (SIX Payment Services) plugin, enabled via PLUGINS in indico.conf
+# (see apps/indico/base/secrets.yaml). Credentials are set in the Indico
+# admin UI (Administration > Plugins > SIXPay Saferpay), not in config.
+# https://github.com/indico/indico-plugins/tree/master/payment_sixpay
+RUN pip install --no-cache-dir indico-plugin-payment-sixpay
