@@ -1,5 +1,0 @@
-image: gotenberg/gotenberg
-version: 8
-app: gotenberg
-subdomain: gotenberg
-domain: fsd.epfl.ch

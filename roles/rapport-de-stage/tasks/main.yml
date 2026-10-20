@@ -1,8 +1,0 @@
-- name: Deploy Web Application
-  include_tasks:
-    file: web.yml
-    apply:
-      tags:
-        - rapport-de-stage.web
-  tags:
-    - rapport-de-stage.web
