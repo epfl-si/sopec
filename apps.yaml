@@ -19,3 +19,5 @@ apps:
     envs: [test, prod]
   - name: rapport-de-stage
     envs: [test, prod]
+  - name: splash
+    envs: [test, prod]
