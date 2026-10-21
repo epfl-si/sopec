@@ -27,12 +27,12 @@ spec:
         - name: svc0176-pull-secret
       containers:
         - name: splash
-          image: quay-its.epfl.ch/svc0176/splash:1.1.0
+          image: quay-its.epfl.ch/svc0176/splash:1.3.0
           imagePullPolicy: Always
           envFrom:
             - secretRef:
                 name: splash-secrets
-          command: ["bun", "worker.js"]
+          command: ["node", "worker.js"]
           resources:
             requests:
               cpu: 25m
